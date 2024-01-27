@@ -1,0 +1,8 @@
+A REST-API automated test generation tool. That takes in a YAML file openapi specification
+and will return a set of tests in a supported language.
+
+Supported languages:
+Javascript
+
+The aim of this tool is to behave in a plug and play manner. Wehre a
+user is able to give theyre Specification and be returned a indepth set of tests. The user should be able to just copy paste these tests into there test directory, and should be able to just simply test.
