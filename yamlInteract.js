@@ -6,7 +6,7 @@ function readYamlFile(yamlFile) {
   try {
     let fileContents = fs.readFileSync(yamlFile, "utf8");
     let data = yaml.load(fileContents);
-    //console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(data, null, 2));
     return data;
   } catch (e) {
     console.log(e);
@@ -33,7 +33,7 @@ function generateTestCode(endpoint, method, responses) {
     testCode += `  it('should return status ${statusCode}', async function() {\n`;
     testCode += `    let response;\n`;
     testCode += `    try {\n`;
-    testCode += `      response = await axios.${method}('https://virtserver.swaggerhub.com/zedrem/FullStack-WebDev-Assignment/1.0.0${endpoint}');\n`;
+    testCode += `      response = await axios.${method}('http://localhost:3333${endpoint}');\n`;
     testCode += `    } catch (error) {\n`;
     testCode += `      response = error.response;\n`;
     testCode += `    }\n`;
