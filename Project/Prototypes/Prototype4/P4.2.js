@@ -53,7 +53,7 @@ const addRulesToSchema = (schema) => {
 
 // Main function to generate mock data
 const generateMockData = (data) => {
-  const components = ["schemas", "securitySchemes"];
+  const components = Object.keys(data.components);
   components.forEach((componentName) => {
     let component = data.components[componentName];
     generateDataForComponent(data, componentName, component);
@@ -61,7 +61,7 @@ const generateMockData = (data) => {
 };
 
 function main() {
-  const yamlFile = "Project/specificationExamples/exampleYAMLResolved2.yaml";
+  const yamlFile = "Project/specificationExamples/exampleYAMLResolved.yaml";
   const data = readYamlFile(yamlFile);
   const mockData = generateMockData(data);
 

@@ -1,0 +1,62 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 1.0.0
+paths:
+  /users/{userId}:
+    get:
+      parameters:       
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: userType
+          in: query
+          schema:
+            $ref: '#/components/schemas/UserType'
+      responses:
+        '200':
+          description: A user object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                userType:
+                  $ref: '#/components/schemas/UserType'
+      responses:
+        '201':
+          description: User created
+    delete:
+      parameters:
+        - name: reason
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+    UserType:
+      type: string
+      enum: [admin, user]
