@@ -66,3 +66,33 @@ When switching between resolved and unresolved formats, ensure that your code up
 Resolved YAML may have different paths due to direct definitions.
 In summary, handling both resolved and unresolved YAML formats requires careful consideration of references, validation, circular dependencies, and performance. Plan your code architecture accordingly to accommodate these challenges.
 
+
+try to incprroate 
+defaultInvalidTypeProduct — If failOnInvalidTypes is disabled this value will be returned on any invalid type given (default: null)
+defaultRandExpMax — Setup default value directly as RandExp.prototype.max (default: 10)
+pruneProperties — Remove given properties from generated objects (default: [])
+ignoreProperties — Skip given properties from being generated (default: [])
+ignoreMissingRefs — If enabled, it will resolve to {} for unknown references (default: false)
+failOnInvalidTypes — If enabled, it will throw an Error for unknown types (default: true)
+failOnInvalidFormat — If enabled, it will throw an Error for unknown formats (default: true)
+alwaysFakeOptionals — When enabled, it will set optionalsProbability: 1.0 and  fixedProbabilities: true (default: false)
+optionalsProbability — A value from 0.0 to 1.0 to generate values in a consistent way, e.g. 0.5 will generate from 0% to 50% of values. Using arrays it means items, on objects they're properties, etc. (default: false)
+fixedProbabilities — If enabled, then optionalsProbability: 0.5 will always generate the half of values (default: false)
+useExamplesValue — If enabled, it will return a random value from examples or single value from example if present (default: false)
+useDefaultValue — If enabled, it will return the default value if present (default: false)
+requiredOnly — If enabled, only required properties will be generated (default: false)
+minItems — Override minItems if it's less than this value (default: 0)
+maxItems — Override maxItems if it's greater than this value (default: null)
+minLength — Override minLength if it's less than this value (default: 0)
+maxLength — Override maxLength if it's greater than this value (default: null)
+refDepthMin — Set a minimum circular $ref depth to render (default: 0)
+refDepthMax — Set a maximum circular $ref depth to render (default: 3)
+resolveJsonPath — If enabled, it will expand jsonPath keywords on all generated objects (default: false)
+reuseProperties — If enabled, it will try to generate missing properties from existing ones. Only when fillProperties is enabled too (default: false)
+sortProperties — If true, properties will be sorted alphabetically, with false original order is kept, or null to keep them randomized (default: null)
+fillProperties — If enabled, it will try to generate missing properties to fulfill the schema definition (default: true)
+random — Setup a custom randonmess generator, useful for getting deterministic results (default: Math.random)
+replaceEmptyByRandomValue — Replace default empty value by a random value (default: false)
+omitNulls — Remove any generated null value from the resulting value (default: false)
+minDateTime — When generating a string with format date-time, set the minimum date that will get selected. If it's a number it will be the offset from now in milliseconds (default: -2524608000000)
+maxDateTime — When generating a string with format date-time, set the maximum date that will get selected. If it's a number it will be the offset from now in milliseconds (default: 1000)

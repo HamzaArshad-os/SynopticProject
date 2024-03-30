@@ -21,7 +21,7 @@ export const schema_path = 'components/schemas'; // User can change this , DOnt 
 export const parameters_path = 'components/parameters'; // User can change this DOnt think need anymore
 
 
-
+//Works
 export const readYamlFile = async (yamlFile) => {
     try {
       let fileContents = fs.readFileSync(yamlFile, "utf8");
@@ -30,13 +30,30 @@ export const readYamlFile = async (yamlFile) => {
       if (!data) {
         throw new Error(`Failed to load data from ${yamlFile}`);
       }
-      data = await $RefParser.dereference(data);
+      //data = await $RefParser.dereference(data);
       return data;
     } catch (e) {
       console.error(e);
     }
 };
 
+
+//Works
+export const getServerInfo = (data) => {
+  let serverInfo = [];
+  if (data.servers) {
+      for (let server of data.servers) {
+          serverInfo.push({
+              url: server.url,
+              description: server.description
+          });
+      }
+  }
+  return serverInfo;
+};
+
+
+//Works
 export const generateCondensedDataList = (data)  =>{
     let endpointList = {};
   
@@ -53,28 +70,36 @@ export const generateCondensedDataList = (data)  =>{
     return endpointList;
   }
 
+//Not needed for now
 export const getSingleEndpointInformation = (data, endpoint, wantedInformation) => {
-    if (data[endpoint_path][endpoint] && data[endpoint_path][endpoint][wantedInformation]) {
+  if (data[endpoint_path][endpoint]) {
+    if (wantedInformation && data[endpoint_path][endpoint][wantedInformation]) {
       return data[endpoint_path][endpoint][wantedInformation];
     }
-    return null;
-  };
+    return data[endpoint_path][endpoint];
+  }
+  return null;
+};
   
-  export const getSingleMethodInformation = (data, endpoint, method, wantedInformation) => {
+//Used
+export const getSingleMethodInformation = (data, endpoint, method, wantedInformation) => {
     if (data[endpoint_path][endpoint] && data[endpoint_path][endpoint][method] && data[endpoint_path][endpoint][method][wantedInformation]) {
       return data[endpoint_path][endpoint][method][wantedInformation];
     }
     return null;
   };
-  
-  export const getSingleResponseInformation = (data, endpoint, method, response, wantedInformation) => {
+
+//Used
+export const getSingleResponseInformation = (data, endpoint, method, response, wantedInformation) => {
     if (data[endpoint_path][endpoint] && data[endpoint_path][endpoint][method] && data[endpoint_path][endpoint][method]['responses'] && data[endpoint_path][endpoint][method]['responses'][response] && data[endpoint_path][endpoint][method]['responses'][response][wantedInformation]) {
       return data[endpoint_path][endpoint][method]['responses'][response][wantedInformation];
     }
     return null;
   };  
 
-  export const getSchemasForEndpointMethod = (data, endpoint, method) => { // Will work in getting refrences aswell but will not need to get refrencesn as dile will b derefreecned in readYAMLFile
+
+//Used
+export const getRequestContentForEndpointMethod = (data, endpoint, method) => { // Will work in getting refrences aswell but will not need to get refrencesn as dile will b derefreecned in readYAMLFile
     let inlineSchemas = [];
     let requestBody = getSingleMethodInformation(data, endpoint, method, 'requestBody');
     if (requestBody && requestBody.content) {
@@ -87,7 +112,8 @@ export const getSingleEndpointInformation = (data, endpoint, wantedInformation) 
     return inlineSchemas;
 };
 
-export const getSchemasForResponse = (data, endpoint, method, response) => { // Will work in getting refrences aswell but will not need to get refrencesn as dile will b derefreecned in readYAMLFile
+//Used
+export const getResponseContentForEndpointMethod = (data, endpoint, method, response) => { // Will work in getting refrences aswell but will not need to get refrencesn as dile will b derefreecned in readYAMLFile
   let inlineSchemas = [];
   let responses = getSingleResponseInformation(data, endpoint, method, response, 'content');
   if (responses) {
@@ -100,7 +126,8 @@ export const getSchemasForResponse = (data, endpoint, method, response) => { // 
   return inlineSchemas;
 };
 
-export const getSchemasForParameters = (data, endpoint, method) => { // Will work in getting refrences aswell but will not need to get refrencesn as dile will b derefreecned in readYAMLFile
+//Used
+export const getParamtersContentForEndpointMethod = (data, endpoint, method) => { // Will work in getting refrences aswell but will not need to get refrencesn as dile will b derefreecned in readYAMLFile
   let inlineSchemas = [];
   let parameters = getSingleMethodInformation(data, endpoint, method, 'parameters');
   if (parameters) {
@@ -111,13 +138,64 @@ export const getSchemasForParameters = (data, endpoint, method) => { // Will wor
   return inlineSchemas;
 };
 
-
-
+//Used
+export const getHeadersContentForEndpointMethod = (data, endpoint, method) => {
+    let headers = [];
+  
+    // Check for global headers
+    if (data.components && data.components.parameters) {
+      for (let param of Object.values(data.components.parameters)) {
+        if (param.in === 'header') {
+          headers.push(param);
+        }
+      }
+    }
+  
+    // Check for path-level headers
+    if (data.paths[endpoint].parameters) {
+      for (let param of data.paths[endpoint].parameters) {
+        if (param.in === 'header') {
+          headers.push(param);
+        }
+      }
+    }
+  
+    // Check for operation-level headers
+    if (data.paths[endpoint][method].parameters) {
+      for (let param of data.paths[endpoint][method].parameters) {
+        if (param.in === 'header') {
+          headers.push(param);
+        }
+      }
+    }
+  
+    // Check for response headers
+    if (data.paths[endpoint][method].responses) {
+      for (let response of Object.values(data.paths[endpoint][method].responses)) {
+        if (response.headers) {
+          for (let header of Object.values(response.headers)) {
+            headers.push(header);
+          }
+        }
+      }
+    }
+  
+    // Check for security headers
+    if (data.components && data.components.securitySchemes) {
+      for (let scheme of Object.values(data.components.securitySchemes)) {
+        if (scheme.in === 'header') {
+          headers.push(scheme);
+        }
+      }
+    }
+  
+    return headers;
+  };
+  
 //function that takes a status code and returns its description
 export const getStatusDescription = (statusCode) => {
-    return statushttp.statusDesc[statusCode];
-  }
-
+  return statushttp.statusDesc[statusCode];
+}
 
 
 
@@ -125,9 +203,9 @@ export const getStatusDescription = (statusCode) => {
 async function main() {
     let data ="";
    
-    const yamlFile = "Project/specificationExamples/tempResolved.yaml"; 
+    //const yamlFile = "Project/specificationExamples/tempResolved.yaml"; 
     //const yamlFile = "Project/specificationExamples/tradingviewSpecResolvedOnly.yaml"; 
-     //const yamlFile = "Project/specificationExamples/exampleYAMLResolved.yaml"; 
+    const yamlFile = "Project/specificationExamples/exampleYAMLResolved.yaml"; 
     
     try {
     
@@ -138,37 +216,12 @@ async function main() {
     }
 
 
-    //SingleFunctionsTesting
-    //let endpoint = "/comments/{comment_id}";
-    let endpoint = "/users/{userId}";
-    let method = "get";
-    let requestedInfo = "description";
-    let response = "200";
+ 
 
     
-    //let a = getSingleMethodInformation(data, endpoint, method, requewwstedInfo) 
-    //let a = getSingleEndpointInformation(data, endpoint,  requestedInfo) 
-    //let a = getSingleResponseInformation(data, endpoint, method, response, requestedInfo) 
-    //console.log(a);
-    //console.log(JSON.stringify(a, null, 2));
-
-
-    //All inline data extraction tests
-    //let a = getInlineSchemasForEndpointMethod(data, endpoint, method);
-    let a = getSchemasForParameters(data, endpoint, method);
-    //let a = getSchemasForResponse(data, endpoint, method, response,200);
-    console.log(JSON.stringify(a, null, 2));
-
-    //const condensedList = generateCondensedDataList(data);
-    //console.log(condensedList);
-   // iterateEndpointList(data, condensedList);
     
 
-   
-  
-
-
-    
+ 
   }
   
   //main();

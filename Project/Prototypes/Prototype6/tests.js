@@ -10,45 +10,6 @@ describe('Will return a list of all users within the system. ', function() {
     expect(response).to.have.status(401);
   });
 });
-
-
-describe('Will return a list of all users within the system. ', function() {
-  it('should return status 200', function(done) {
-    chai.request('http://localhost:3333').get('/users').set({}).send({}).end(function(err, res) {
-      expect(res).to.have.status(200);
-      done();
-    });
-  });
-});
-
-
-
-
-
-describe('Will return a list of all users within the system. ', function() {
-  it('should return status 200', async function() {
-    let response = await chai.request('http://localhost:3333').get('/users').set({}).send({});
-    expect(response).to.have.status(200);
-  });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 describe('Will return a list of all users within the system. ', function() {
   it('should return status 500', async function() {
     let response = await chai.request('http://localhost:3333').get('/users').set({}).send({});
@@ -57,25 +18,25 @@ describe('Will return a list of all users within the system. ', function() {
 });
 describe('Will create a new user in the system. ', function() {
   it('should return status 201', async function() {
-    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"proident","last_name":"nulla","email":"1qT8ZZY7SUybPoj@dgtzmdM.ql","password":"laborum aliqua"});
+    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"minim tempor ullamco","last_name":"in tempor","email":"r3xAT@aNysRuZConRmUvQKemAXaDtDnMXI.zxv","password":"in ut commodo adipisicing"});
     expect(response).to.have.status(201);
   });
 });
 describe('Will create a new user in the system. ', function() {
   it('should return status 400', async function() {
-    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"ad laboris non","last_name":"veniam labore","email":"6yAWwZ2Zn8YW@YofJ.kiza","password":"mollit"});
+    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"amet","last_name":"in est","email":"JmPhWtsO13@syAJDdJj.sipt","password":"consectetur nulla pariatur"});
     expect(response).to.have.status(400);
   });
 });
 describe('Will create a new user in the system. ', function() {
   it('should return status 401', async function() {
-    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"Excepteur","last_name":"cillum aliqua pariatur","email":"OQ20I2QNCyh925@iNQpcnJruEHdm.evuv","password":"dolor"});
+    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"laboris consequat adipisicing","last_name":"voluptate quis esse","email":"loxW8AgfBlb@tSobIaGVgeirvygaaS.hz","password":"occaecat ullamco exercitation"});
     expect(response).to.have.status(401);
   });
 });
 describe('Will create a new user in the system. ', function() {
   it('should return status 500', async function() {
-    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"aute nulla","last_name":"nisi tempor do eiusmod","email":"QN6JQQ2QNA0u@woQPGAFx.zdvy","password":"consequat in et Excepteur"});
+    let response = await chai.request('http://localhost:3333').post('/users').set({}).send({"first_name":"laboris","last_name":"dolore ipsum","email":"nPyj@BskHIfvcfqUHOWQgTqlPWdVYdkYN.efw","password":"ea cupidatat sint laboris non"});
     expect(response).to.have.status(500);
   });
 });
@@ -105,19 +66,19 @@ describe('Delete a user from the system. ', function() {
 });
 describe('Will log a user into their account. ', function() {
   it('should return status 200', async function() {
-    let response = await chai.request('http://localhost:3333').post('/login').set({}).send({"email":"0KUNMO1iGI6F@AJEcHjFArsVQDPTMlvpzOEjW.ht","password":"proident"});
+    let response = await chai.request('http://localhost:3333').post('/login').set({}).send({"email":"wPLHmd2JVN7A@jcTwQxqFg.dpoh","password":"Excepteur Ut"});
     expect(response).to.have.status(200);
   });
 });
 describe('Will log a user into their account. ', function() {
   it('should return status 400', async function() {
-    let response = await chai.request('http://localhost:3333').post('/login').set({}).send({"email":"PcYwOZ-pgpN8@MsASHlKTAZbrAuTq.kd","password":"sint incididunt in"});
+    let response = await chai.request('http://localhost:3333').post('/login').set({}).send({"email":"piG0snLCb@jqqwnalgemklJRGsKHEZtZujqd.ea","password":"ut quis magna"});
     expect(response).to.have.status(400);
   });
 });
 describe('Will log a user into their account. ', function() {
   it('should return status 500', async function() {
-    let response = await chai.request('http://localhost:3333').post('/login').set({}).send({"email":"W5zu8IdSZYJu@cncxsA.zaoh","password":"sed in ipsum"});
+    let response = await chai.request('http://localhost:3333').post('/login').set({}).send({"email":"Qrr@MnHyNIwRyExRCmbOIPewOBb.aag","password":"tempor minim culpa sit ad"});
     expect(response).to.have.status(500);
   });
 });
@@ -153,25 +114,25 @@ describe('Will return a list of all articles, ordered by date (newest first). ',
 });
 describe('Add a new article into the system. ', function() {
   it('should return status 201', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"magna enim","author":"dolor officia","article_text":"enim"});
+    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"ex amet non cupidatat Duis","author":"mollit occaecat ut consectetur","article_text":"incididunt"});
     expect(response).to.have.status(201);
   });
 });
 describe('Add a new article into the system. ', function() {
   it('should return status 400', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"ut in cupidatat minim ad","author":"minim aliqua","article_text":"dolor dolor dolore"});
+    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"mollit nostrud","author":"labore deserunt nostrud aliquip dolore","article_text":"magna consequat"});
     expect(response).to.have.status(400);
   });
 });
 describe('Add a new article into the system. ', function() {
   it('should return status 401', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"magna in","author":"qui velit nostrud Excepteur ad","article_text":"veniam eu"});
+    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"officia consectetur ea non pariatur","author":"dolore","article_text":"sunt irure dolore officia consequat"});
     expect(response).to.have.status(401);
   });
 });
 describe('Add a new article into the system. ', function() {
   it('should return status 500', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"in eiusmod","author":"do","article_text":"minim commodo id"});
+    let response = await chai.request('http://localhost:3333').post('/articles').set({}).send({"title":"voluptate","author":"amet veniam dolor esse","article_text":"adipisicing sed"});
     expect(response).to.have.status(500);
   });
 });
@@ -219,31 +180,31 @@ describe('Deletes an article from the system. ', function() {
 });
 describe('Update an article (published date will stay the same). ', function() {
   it('should return status 200', async function() {
-    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"exercitation","author":"qui sint aute velit","article_text":"dolor eiusmod fugiat"});
+    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"proident irure","author":"id consectetur velit","article_text":"Duis sed ut"});
     expect(response).to.have.status(200);
   });
 });
 describe('Update an article (published date will stay the same). ', function() {
   it('should return status 400', async function() {
-    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"laboris","author":"quis ex","article_text":"ex eu minim voluptate"});
+    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"do","author":"officia proident Excepteur magna eiusmod","article_text":"Ut dolore veniam sit"});
     expect(response).to.have.status(400);
   });
 });
 describe('Update an article (published date will stay the same). ', function() {
   it('should return status 401', async function() {
-    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"aliqua Excepteur","author":"quis velit anim","article_text":"tempor"});
+    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"est","author":"dolore eiusmod culpa","article_text":"ullamco ipsum"});
     expect(response).to.have.status(401);
   });
 });
 describe('Update an article (published date will stay the same). ', function() {
   it('should return status 404', async function() {
-    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"esse eiusmod Excepteur mollit adipisicing","author":"velit exercitation Duis anim","article_text":"labore nostrud et"});
+    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"culpa est","author":"enim eiusmod cupidatat pariatur in","article_text":"consequat reprehenderit ea voluptate est"});
     expect(response).to.have.status(404);
   });
 });
 describe('Update an article (published date will stay the same). ', function() {
   it('should return status 500', async function() {
-    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"nulla id","author":"ad exercitation","article_text":"veniam dolor sunt commodo cillum"});
+    let response = await chai.request('http://localhost:3333').patch('/articles/{article_id}').set({}).send({"title":"culpa ut ut enim velit","author":"ea enim id eiusmod","article_text":"deserunt dolor proident"});
     expect(response).to.have.status(500);
   });
 });
@@ -267,31 +228,31 @@ describe('Get a list of comments for a given article. ', function() {
 });
 describe('Add a new comment to an article. ', function() {
   it('should return status 201', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"dolor reprehenderit velit"});
+    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"veniam do"});
     expect(response).to.have.status(201);
   });
 });
 describe('Add a new comment to an article. ', function() {
   it('should return status 400', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"Duis dolore"});
+    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"dolor in nulla voluptate ipsum"});
     expect(response).to.have.status(400);
   });
 });
 describe('Add a new comment to an article. ', function() {
   it('should return status 401', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"sunt"});
+    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"et occaecat Excepteur proident"});
     expect(response).to.have.status(401);
   });
 });
 describe('Add a new comment to an article. ', function() {
   it('should return status 404', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"reprehenderit est laborum nisi consectetur"});
+    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"cupidatat consectetur ad Duis non"});
     expect(response).to.have.status(404);
   });
 });
 describe('Add a new comment to an article. ', function() {
   it('should return status 500', async function() {
-    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"consequat adipisicing in aliqua do"});
+    let response = await chai.request('http://localhost:3333').post('/articles/{article_id}/comments').set({}).send({"comment_text":"dolor ea ullamco"});
     expect(response).to.have.status(500);
   });
 });

@@ -8,75 +8,149 @@ import * as datageneration from "./mockDataGeneration.js";
 import * as yamlInteract from "./yamlInteract.js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import $RefParser from 'json-schema-ref-parser';
+import $RefParser from "json-schema-ref-parser";
 
 chai.use(chaiHttp);
 const { assert } = chai;
 
+export const getSectionsIncludingSchemas = (data,endpoint,method,responseType) => {
+  let schemasForThisTest = {
+    parameters: [],
+    requestHeader: [],
+    requestBody: [],
+    responses: [],
+  };
 
+  // Get schemas for parameters
+  let parameterSchemas = yamlInteract.getParamtersContentForEndpointMethod(data,
+    endpoint,
+    method
+  );
 
-
-
-
-export const iterateEndpointList = (data,endpointList, url)  =>{
-    for (let endpoint in endpointList) {
-      for (let method in endpointList[endpoint]) {
-        for (let response of endpointList[endpoint][method]) {
-            //console.log(endpoint , method, response);
-            generateJavascriptTest(data, url, endpoint, method, response);
-            
-        }
-      }
-    }
-}
-
-
-export const generateJavascriptTest = (data,url, endpoint, method, response) =>{
-    let javascriptTest= "";
-
-    let headerMockData = {};
-    let bodymockData = {};
-    
-
-
-    let tags =  yamlInteract.getSingleMethodInformation(data, endpoint, method, 'tags') || "no tags";
-    let summary = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'summary') || "no summary";
-    let description = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'description') || "no description";
-    let operationId = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'operationId') || "no operationId";
-    let requestBody = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'requestBody') || "no requestBody";
-    let responses = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'responses') || "no responses";
-    let callbacks = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'callbacks') || "no callbacks";
-    let deprecated = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'deprecated') || "no deprecated";
-    let security = yamlInteract.getSingleMethodInformation(data, endpoint, method, 'security') || "no security";
-    let responseStatusDescription = yamlInteract.getStatusDescription(response); //Use this instead incase if no response desccrtiption in  documentation
-
-        
-
-    
-
-    //javascriptTest +=  ` \n`;
-    javascriptTest += `describe('${description}', () => {\n`;
-    javascriptTest += `  before(() => {\n`;
-    javascriptTest += `    console.log("Tags: ${tags}, Summary: ${summary}, Description: ${description}, Operation ID: ${operationId}, Request Body: ${requestBody}, Responses: ${responses}, Callbacks: ${callbacks}, Deprecated: ${deprecated}, Security: ${security}, Response Status Description: ${responseStatusDescription}");\n`;
-    javascriptTest += `  });\n`;
-    javascriptTest += `  it('should return status ${response} with "${responseStatusDescription}"', () => {\n`;
-    javascriptTest += `    return chai\n`;
-    javascriptTest += `      .request('${url}')\n`;
-    javascriptTest += `      .${method}('${endpoint}')\n`;
-    javascriptTest += `      .set(${JSON.stringify(headerMockData)})\n`;
-    javascriptTest += `      .send(${JSON.stringify(bodymockData)})\n`;
-    javascriptTest += `      .then((res) => {\n`;
-    javascriptTest += `        expect(res).to.have.status(${response});\n`;
-    javascriptTest += `      })\n`;
-    javascriptTest += `      .catch((err) => {\n`;
-    javascriptTest += `        throw err;\n`;
-    javascriptTest += `      });\n`;
-    javascriptTest += `  });\n`;
-    javascriptTest += `});\n`;
-    javascriptTest += `\n\n`;
-
-   console.log(javascriptTest);
+  if (parameterSchemas.length > 0) {
+    schemasForThisTest.parameters.push(...parameterSchemas);
   }
 
+  //Get schemas for Headers
+  let headerSchemas = yamlInteract.getHeadersContentForEndpointMethod(
+    data,
+    endpoint,
+    method
+  );
+  if (headerSchemas.length > 0) {
+    schemasForThisTest.requestHeader.push(...headerSchemas);
+  }
+
+  // Get schemas for requestBody
+  let requestBodySchemas = yamlInteract.getRequestContentForEndpointMethod(
+    data,
+    endpoint,
+    method
+  );
+  if (requestBodySchemas.length > 0) {
+    schemasForThisTest.requestBody.push(...requestBodySchemas);
+  }
+
+  // Get schemas for responses
+  let responseSchemas = yamlInteract.getResponseContentForEndpointMethod(
+    data,
+    endpoint,
+    method,
+    responseType
+  );
+  if (responseSchemas.length > 0) {
+    schemasForThisTest.responses.push(...responseSchemas);
+  }
+
+  return schemasForThisTest;
+};
+
+export const iterateEndpointList = (data, endpointList, url) => {
+  let allData = {};
+
+  for (let endpoint in endpointList) {
+    for (let method in endpointList[endpoint]) {
+      for (let response of endpointList[endpoint][method]) {
+        const ContentAndSchemas = getSectionsIncludingSchemas(data, endpoint, method, response);
+        const sections = ['parameters', 'requestHeader', 'requestBody', 'responses'];
+        console.log(JSON.stringify(ContentAndSchemas, null, 2));
+        sections.forEach(sectionName => {
+          const section = ContentAndSchemas[sectionName];
+          const { schemas, unusedInfos } = datageneration.generateSchemas(section);
+          const mockData = datageneration.generateMockData(schemas);
 
 
+          allData[sectionName] = {
+            sectionName,
+            "MockData" : mockData,
+            "Schemas" : schemas,
+            "unusedInfo" :unusedInfos
+          };
+
+
+        });
+        //console.log(datageneration.variables.length);
+        //datageneration.readVariables();
+        //contenttype
+        //allData = {}; clear the data 
+        //console.log(JSON.stringify(allData, null, 2));
+      }
+    }
+  }
+};
+
+
+export const javascriptTestTopOfFile = (data) => {
+  let javascripttesTopOfFile = "";
+  //javascripttesTopOfFile +=  ` \n`;
+  javascripttesTopOfFile += `//Please make sure the correct Libaries are installed\n`;
+  javascripttesTopOfFile += `const fs = require("fs");\n`;
+  javascripttesTopOfFile += `const chai = require("chai");\n`;
+  javascripttesTopOfFile += `const chaiHttp = require("chai-http");\n`;
+  javascripttesTopOfFile += `const expect = chai.expect;\n`;
+  javascripttesTopOfFile += `chai.use(chaiHttp);\n`;
+  javascripttesTopOfFile += `const path = require("path");\n`;
+  javascripttesTopOfFile += `const filename = path.basename(__filename);\n`;
+
+  javascriptTestExtraVariables();
+
+  // Extract the server information
+  const serverInfo = yamlInteract.getServerInfo(data);
+
+  // Assign the server information to a constant
+  for (let i = 0; i < serverInfo.length; i++) {
+    javascripttesTopOfFile += `const url = "${serverInfo[0].url}";\n`;
+    javascripttesTopOfFile += `const SERVER_${i + 1}_DESCRIPTION = "${
+      serverInfo[i].description
+    }";\n`;
+  }
+
+  return javascripttesTopOfFile;
+};
+
+export const javascriptTestExtraVariables = () => {
+  try {
+    let extraVariables = "";
+    datageneration.failedSchemas.forEach((name, index) => {
+      extraVariables += `const ${name} = "";\n`;
+    });
+    //console.log(extraVariables);
+
+    return extraVariables;
+  } catch (error) {
+    //console.log("Error generating the extra variable");
+    console.error(error);
+    return null;
+  }
+};
+
+export const generateJavascriptTest = (
+  data,
+  url,
+  endpoint,
+  method,
+  response
+) => {
+  //console.log(javascriptTest);
+  return javascriptTest;
+};
