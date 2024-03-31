@@ -34,6 +34,7 @@ JSONSchemaFaker.option({
   failOnInvalidFormat: false, // Don't throw an error if format is invalid
   failOnInvalidTypes: false, // Don't throw an error if type is invalid
   alwaysFakeOptionals: true, //generate schemas for none required aswell
+  additionalProperties: false
 });
 
 
@@ -97,23 +98,26 @@ export const generateSchema = (section) => {
     unusedInfo.items = itemsUnusedInfo;
   }
 
-  // Handle the properties property
-  if (section.properties) {
-    let { schema: propertiesSchema, unusedInfo: propertiesUnusedInfo } = generatePropertiesSchema(section.properties);
-    schema.properties = propertiesSchema;
-    unusedInfo.properties = propertiesUnusedInfo;
-  }
-
-  // Handle the additionalProperties property
-  if (section.additionalProperties !== undefined) {
-    if (section.additionalProperties === false) {
-      // Handle empty objects
-      schema.additionalProperties = false;
-    } else {
-      let { schema: additionalPropertiesSchema } = generateSchema(section.additionalProperties);
-      schema.additionalProperties = additionalPropertiesSchema;
+    // Handle the properties property
+    if (section.properties) {
+      let { schema: propertiesSchema, unusedInfo: propertiesUnusedInfo } = generatePropertiesSchema(section.properties);
+      schema.properties = propertiesSchema;
+      unusedInfo.properties = propertiesUnusedInfo;
     }
-  }
+  
+    // Handle the additionalProperties property
+    if (section.additionalProperties !== undefined) {
+      if (section.additionalProperties === false) {
+        // Handle empty objects
+        schema.additionalProperties = false;
+      } else {
+        let { schema: additionalPropertiesSchema } = generateSchema(section.additionalProperties);
+        schema.additionalProperties = additionalPropertiesSchema;
+      }
+    } else {
+      // If additionalProperties is not defined, set it to false
+      schema.additionalProperties = false;
+    }
 
   // Handle the patternProperties property
   if (section.patternProperties) {

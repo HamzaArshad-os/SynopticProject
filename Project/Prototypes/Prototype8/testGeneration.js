@@ -72,8 +72,9 @@ export const iterateEndpointList = (data, endpointList, url) => {
     for (let method in endpointList[endpoint]) {
       for (let response of endpointList[endpoint][method]) {
         const ContentAndSchemas = getSectionsIncludingSchemas(data, endpoint, method, response);
+        console.log(endpoint, method , response)
         const sections = ['parameters', 'requestHeader', 'requestBody', 'responses'];
-        console.log(JSON.stringify(ContentAndSchemas, null, 2));
+        //console.log(JSON.stringify(ContentAndSchemas, null, 2));
         sections.forEach(sectionName => {
           const section = ContentAndSchemas[sectionName];
           const { schemas, unusedInfos } = datageneration.generateSchemas(section);
@@ -81,10 +82,9 @@ export const iterateEndpointList = (data, endpointList, url) => {
 
 
           allData[sectionName] = {
-            sectionName,
             "MockData" : mockData,
             "Schemas" : schemas,
-            "unusedInfo" :unusedInfos
+            "unusedInfo" :unusedInfos   
           };
 
 
@@ -93,7 +93,7 @@ export const iterateEndpointList = (data, endpointList, url) => {
         //datageneration.readVariables();
         //contenttype
         //allData = {}; clear the data 
-        //console.log(JSON.stringify(allData, null, 2));
+        console.log(JSON.stringify(allData, null, 2));
       }
     }
   }
@@ -144,13 +144,9 @@ export const javascriptTestExtraVariables = () => {
   }
 };
 
-export const generateJavascriptTest = (
-  data,
-  url,
-  endpoint,
-  method,
-  response
-) => {
+export const generateJavascriptTest = (data,url,endpoint,method,response) => {
+  
+  
   //console.log(javascriptTest);
   return javascriptTest;
 };

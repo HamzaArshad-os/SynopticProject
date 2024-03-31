@@ -51,8 +51,8 @@ async function main() {
     //let a = yamlInteract.getSchemasForResponse(data ,"/accounts/{accountId}/orders", "get" ,200);
     //console.log(JSON.stringify(a, null, 2));
     //testgenerator.iterateEndpointList(data, condensedList,serverInfo[0].url);
-    testgenerator.iterateEndpointList(data, condensedList, url); 
-   
+    testgenerator.iterateEndpointListForSchemas(data, condensedList, url); 
+    
   }
   
   main();

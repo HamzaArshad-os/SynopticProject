@@ -126,7 +126,7 @@ export const getResponseContentForEndpointMethod = (data, endpoint, method, resp
   return inlineSchemas;
 };
 
-//Used
+//Used    
 export const getParamtersContentForEndpointMethod = (data, endpoint, method) => { // Will work in getting refrences aswell but will not need to get refrencesn as dile will b derefreecned in readYAMLFile
   let inlineSchemas = [];
   let parameters = getSingleMethodInformation(data, endpoint, method, 'parameters');
@@ -225,3 +225,4 @@ async function main() {
   }
   
   //main();
+
