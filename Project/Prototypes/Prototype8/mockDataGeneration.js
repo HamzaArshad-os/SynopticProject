@@ -16,8 +16,9 @@ const ajv = new Ajv();
 chai.use(chaiHttp);
 const { assert } = chai;
 
-export let variables = [];
 
+export let variables = [];
+export let uniqueSchemas = [];
 
 export function readVariables() {
   variables.forEach((variable, index) => {
@@ -43,12 +44,92 @@ const validDataTypes = ['string', 'number', 'integer', 'object', 'array', 'boole
 const validFormats = ['date-time', 'date', 'time', 'email', 'idn-email', 'hostname', 'idn-hostname', 'ipv4', 'ipv6', 'uri', 'uri-reference', 'iri', 'iri-reference', 'uuid', 'uri-template', 'json-pointer', 'relative-json-pointer', 'regex', 'faker', 'chance', 'casual'];
 const additionalSchemaProperties = ['multipleOf', 'exclusiveMinimum', 'exclusiveMaximum', 'pattern', 'maxLength', 'minLength', 'maxItems', 'minItems', 'uniqueItems', 'contains', 'maxProperties', 'minProperties', 'dependencies', 'propertyNames', 'if', 'then', 'else', 'allOf', 'anyOf', 'oneOf', 'not', 'media', 'discriminator', 'readOnly', 'writeOnly'];
 
+
+
+
+// Function to generate a schema for each property in a properties object
+function generatePropertiesSchema(properties) {
+  let schemaProperties = {};
+  let unusedInfoProperties = {};
+  for (let propName in properties) {
+    let { schema, unusedInfo } = generateSchema(properties[propName]);
+    schemaProperties[propName] = schema;
+    unusedInfoProperties[propName] = unusedInfo;
+  }
+  return { schema: schemaProperties, unusedInfo: unusedInfoProperties };
+}
+
+export const generateSchemas = (sections) => {
+  let schemas = [];
+  let unusedInfos = [];
+  for (let section of sections) {
+    let result = generateSchema(section);
+    if (result !== null) {
+      let { schema, unusedInfo } = result;
+      if (schema === null) {
+        console.log('Duplicate schema detected for section:', section);
+        continue; // Skip this section and move to the next one
+      }
+      schemas.push(schema);
+      unusedInfos.push(unusedInfo);
+    }
+  }
+  return { schemas, unusedInfos };
+};
+
+
+
+const isValidSchema = (schema) => {
+  // Use the AJV library to validate the schema
+  const valid = ajv.validateSchema(schema);
+  return valid;
+};
+
+
+
+export const generateMockData = (schemas) => {
+  let mockData = {};
+
+  schemas.forEach((schema, index) => {
+    try {
+      // Generate mock data for the current schema
+      let data = JSONSchemaFaker.generate(schema);
+
+      // If a title is provided, use it as the key, otherwise use the index
+      let key = schema.title ? schema.title : `mockData${index}`;
+
+      // Remove additional properties that are not defined in the schema
+      if (schema.type === 'object' && schema.properties) {
+        Object.keys(data).forEach(prop => {
+          if (!schema.properties.hasOwnProperty(prop)) {
+            delete data[prop];
+          }
+        });
+      }
+
+      // Add the generated data to the mock data object with the key
+      mockData[key] = data;
+    } catch (error) {
+      console.log(
+        `json-schema-faker could not generate data for schema: ${JSON.stringify(
+          schema
+        )}`
+      );
+    }
+  });
+
+  return mockData;
+};
+
+
+
+
 export const generateSchema = (section) => {
   let schema = {};
   let unusedInfo = {};
 
   // Handle the type property
-  let type = section.schema ? section.schema.type : section.type;
+  let type = section.schema && section.schema.type !== undefined ? section.schema.type : section.type;
   if (type && validDataTypes.includes(type)) {
     schema.type = type;
   } else {
@@ -98,26 +179,26 @@ export const generateSchema = (section) => {
     unusedInfo.items = itemsUnusedInfo;
   }
 
-    // Handle the properties property
-    if (section.properties) {
-      let { schema: propertiesSchema, unusedInfo: propertiesUnusedInfo } = generatePropertiesSchema(section.properties);
-      schema.properties = propertiesSchema;
-      unusedInfo.properties = propertiesUnusedInfo;
-    }
-  
-    // Handle the additionalProperties property
-    if (section.additionalProperties !== undefined) {
-      if (section.additionalProperties === false) {
-        // Handle empty objects
-        schema.additionalProperties = false;
-      } else {
-        let { schema: additionalPropertiesSchema } = generateSchema(section.additionalProperties);
-        schema.additionalProperties = additionalPropertiesSchema;
-      }
-    } else {
-      // If additionalProperties is not defined, set it to false
+  // Handle the properties property
+  if (section.properties) {
+    let { schema: propertiesSchema, unusedInfo: propertiesUnusedInfo } = generatePropertiesSchema(section.properties);
+    schema.properties = propertiesSchema;
+    unusedInfo.properties = propertiesUnusedInfo;
+  }
+
+  // Handle the additionalProperties property
+  if (section.additionalProperties !== undefined) {
+    if (section.additionalProperties === false) {
+      // Handle empty objects
       schema.additionalProperties = false;
+    } else {
+      let { schema: additionalPropertiesSchema } = generateSchema(section.additionalProperties);
+      schema.additionalProperties = additionalPropertiesSchema;
     }
+  } else {
+    // If additionalProperties is not defined, set it to false
+    schema.additionalProperties = false;
+  }
 
   // Handle the patternProperties property
   if (section.patternProperties) {
@@ -128,6 +209,7 @@ export const generateSchema = (section) => {
     }
   }
 
+  
   // Handle the format property
   if (section.format && validFormats.includes(section.format)) {
     schema.format = section.format;
@@ -201,77 +283,18 @@ export const generateSchema = (section) => {
     schema.writeOnly = section.writeOnly;
   }
 
+  let schemaString = JSON.stringify(schema);
+  console.log('Generated schema:', schemaString);
+
+  // Check if the schema already exists in the array
+  if (uniqueSchemas.includes(schemaString)) {
+    //console.log('Duplicate schema detected');
+    return { schema: null, unusedInfo: null };
+  } else {
+    // If it's a new schema, add it to the array
+    uniqueSchemas.push(schemaString);
+    //console.log(schemaString);
+  }
+
   return { schema, unusedInfo };
 }
-
-
-// Function to generate a schema for each property in a properties object
-function generatePropertiesSchema(properties) {
-  let schemaProperties = {};
-  let unusedInfoProperties = {};
-  for (let propName in properties) {
-    let { schema, unusedInfo } = generateSchema(properties[propName]);
-    schemaProperties[propName] = schema;
-    unusedInfoProperties[propName] = unusedInfo;
-  }
-  return { schema: schemaProperties, unusedInfo: unusedInfoProperties };
-}
-
-export const generateSchemas = (sections) => {
-  let schemas = [];
-  let unusedInfos = [];
-  for (let section of sections) {
-    let result = generateSchema(section);
-    if (result !== null) {
-      let { schema, unusedInfo } = result;
-      schemas.push(schema);
-      unusedInfos.push(unusedInfo);
-    }
-  }
-  return { schemas, unusedInfos };
-};
-
-
-const isValidSchema = (schema) => {
-  // Use the AJV library to validate the schema
-  const valid = ajv.validateSchema(schema);
-  return valid;
-};
-
-
-
-export const generateMockData = (schemas) => {
-  let mockData = {};
-
-  schemas.forEach((schema, index) => {
-    try {
-      // Generate mock data for the current schema
-      let data = JSONSchemaFaker.generate(schema);
-
-      // If a title is provided, use it as the key, otherwise use the index
-      let key = schema.title ? schema.title : `mockData${index}`;
-
-      // Remove additional properties that are not defined in the schema
-      if (schema.type === 'object' && schema.properties) {
-        Object.keys(data).forEach(prop => {
-          if (!schema.properties.hasOwnProperty(prop)) {
-            delete data[prop];
-          }
-        });
-      }
-
-      // Add the generated data to the mock data object with the key
-      mockData[key] = data;
-    } catch (error) {
-      console.log(
-        `json-schema-faker could not generate data for schema: ${JSON.stringify(
-          schema
-        )}`
-      );
-    }
-  });
-
-  return mockData;
-};
-
-

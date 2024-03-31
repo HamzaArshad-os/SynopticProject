@@ -52,7 +52,7 @@ async function main() {
     //console.log(JSON.stringify(a, null, 2));
     //testgenerator.iterateEndpointList(data, condensedList,serverInfo[0].url);
     testgenerator.iterateEndpointListForSchemas(data, condensedList, url); 
-    
+    //testgenerator.generateMockDataForUniqueSchemas(1);
   }
   
   main();
