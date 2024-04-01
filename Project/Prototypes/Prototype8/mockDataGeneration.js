@@ -17,7 +17,7 @@ chai.use(chaiHttp);
 const { assert } = chai;
 
 export let variables = [];
-
+export let uniqueSchemas = [];
 
 export function readVariables() {
   variables.forEach((variable, index) => {
@@ -224,12 +224,21 @@ export const generateSchemas = (sections) => {
     let result = generateSchema(section);
     if (result !== null) {
       let { schema, unusedInfo } = result;
+      let schemaString = JSON.stringify(schema);
+      if(!uniqueSchemas.includes(schemaString)){
+        uniqueSchemas.push(schemaString);
+      }
+      else{
+        //console.log("This Schema is not unique" + schemaString);
+      }
       schemas.push(schema);
       unusedInfos.push(unusedInfo);
     }
   }
   return { schemas, unusedInfos };
 };
+
+
 
 
 const isValidSchema = (schema) => {
@@ -240,36 +249,34 @@ const isValidSchema = (schema) => {
 
 
 
-export const generateMockData = (schemas) => {
+export const generateMockData = (schema) => {
   let mockData = {};
 
-  schemas.forEach((schema, index) => {
-    try {
-      // Generate mock data for the current schema
-      let data = JSONSchemaFaker.generate(schema);
+  try {
+    // Generate mock data for the current schema
+    let data = JSONSchemaFaker.generate(schema);
 
-      // If a title is provided, use it as the key, otherwise use the index
-      let key = schema.title ? schema.title : `mockData${index}`;
+    // If a title is provided, use it as the key, otherwise use the index
+    let key = schema.title ? schema.title : `mockData${0}`;
 
-      // Remove additional properties that are not defined in the schema
-      if (schema.type === 'object' && schema.properties) {
-        Object.keys(data).forEach(prop => {
-          if (!schema.properties.hasOwnProperty(prop)) {
-            delete data[prop];
-          }
-        });
-      }
-
-      // Add the generated data to the mock data object with the key
-      mockData[key] = data;
-    } catch (error) {
-      console.log(
-        `json-schema-faker could not generate data for schema: ${JSON.stringify(
-          schema
-        )}`
-      );
+    // Remove additional properties that are not defined in the schema
+    if (schema.type === 'object' && schema.properties) {
+      Object.keys(data).forEach(prop => {
+        if (!schema.properties.hasOwnProperty(prop)) {
+          delete data[prop];
+        }
+      });
     }
-  });
+
+    // Add the generated data to the mock data object with the key
+    mockData[key] = data;
+  } catch (error) {
+    console.log(
+      `json-schema-faker could not generate data for schema: ${JSON.stringify(schema)}`
+    );
+
+    console.log("\nEnd \n" + error.message)
+  }
 
   return mockData;
 };

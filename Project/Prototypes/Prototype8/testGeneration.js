@@ -6,9 +6,12 @@ import path from "path";
 
 import * as datageneration from "./mockDataGeneration.js";
 import * as yamlInteract from "./yamlInteract.js";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import * as fileHandler from "./fileHandling.js";
 import $RefParser from "json-schema-ref-parser";
+
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { writeFileSync, mkdirSync, existsSync, rmdirSync } from 'fs';
 
 chai.use(chaiHttp);
 const { assert } = chai;
@@ -65,7 +68,7 @@ export const getSectionsIncludingSchemas = (data,endpoint,method,responseType) =
   return schemasForThisTest;
 };
 
-export const iterateEndpointList = (data, endpointList, url) => {
+export const iterateEndpointListForSchemas = (data, endpointList, url) => {
   let allData = {};
 
   for (let endpoint in endpointList) {
@@ -78,14 +81,16 @@ export const iterateEndpointList = (data, endpointList, url) => {
         sections.forEach(sectionName => {
           const section = ContentAndSchemas[sectionName];
           const { schemas, unusedInfos } = datageneration.generateSchemas(section);
-          const mockData = datageneration.generateMockData(schemas);
+          
+         
+          //const mockData = datageneration.generateMockData(schemas);
+          console.log(JSON.stringify(section, null, 2));
 
-
-          allData[sectionName] = {
-            "MockData" : mockData,
-            "Schemas" : schemas,
-            "unusedInfo" :unusedInfos   
-          };
+          //allData[sectionName] = {
+           // "MockData" : mockData,
+          //  "Schemas" : schemas,
+          // "unusedInfo" :unusedInfos   
+          //};
 
 
         });
@@ -93,9 +98,63 @@ export const iterateEndpointList = (data, endpointList, url) => {
         //datageneration.readVariables();
         //contenttype
         //allData = {}; clear the data 
-        console.log(JSON.stringify(allData, null, 2));
+
+
+        //console.log(JSON.stringify(allData, null, 2));
       }
     }
+  }
+  //console.log("Unique Schemas");
+  //for (var i= 0; i<= datageneration.uniqueSchemas.length; i++){
+   // console.log(datageneration.uniqueSchemas[i]);
+//  }
+
+ // console.log(checkForDuplicates(datageneration.uniqueSchemas));
+};
+
+const fileType = 'json';
+
+
+// Function to generate a random 5 letter string
+const generateRandomString = () => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const charactersLength = characters.length;
+  for (let i = 0; i < 5; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
+
+
+export const mockDataGenerationEntry = (count) => {
+  datageneration.uniqueSchemas.forEach((schemaString) => {
+    let tobeAddedToFileArray = [];
+    for (let i = 0; i < count; i++) {
+      let jsonObject = JSON.parse(schemaString);
+      console.log("Generating mock Datas for:");
+      console.log(jsonObject); // Logs the JSON object to the console
+      let data = datageneration.generateMockData(jsonObject);
+      console.log(JSON.stringify(data, null, 2));
+      tobeAddedToFileArray.push(data);
+    }
+   
+  });
+}
+
+
+
+const checkForDuplicates = (schemas) => {
+  // Create a Set from the array of schemas
+  const uniqueSchemasSet = new Set(schemas);
+
+  // If the size of the Set is less than the length of the array, there are duplicates
+  if (uniqueSchemasSet.size < schemas.length) {
+    return 'There are duplicates.';
+  } else {
+    return 'There are no duplicates.';
   }
 };
 

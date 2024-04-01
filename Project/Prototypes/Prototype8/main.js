@@ -7,6 +7,7 @@ import * as statushttp from 'statushttp';
 
 import * as yamlInteract from "./yamlInteract.js";
 import * as testgenerator from "./testgeneration.js";
+import * as fileHandler from "./fileHandling.js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import $RefParser from 'json-schema-ref-parser';
@@ -26,6 +27,10 @@ export const setEndPointPath = (newPath) => {
 
 
 async function main() {
+
+  fileHandler.createDirectoriesForOutputs();
+  
+
     let data ="";
     
    
@@ -52,7 +57,7 @@ async function main() {
     //console.log(JSON.stringify(a, null, 2));
     //testgenerator.iterateEndpointList(data, condensedList,serverInfo[0].url);
     testgenerator.iterateEndpointListForSchemas(data, condensedList, url); 
-    
+    //testgenerator.mockDataGenerationEntry(1);
   }
   
   main();
