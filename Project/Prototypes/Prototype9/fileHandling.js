@@ -114,7 +114,7 @@ export const createSubDirectories=()=> {
 export const fileType = "json";
 
 
-export const  generateSchemaFileInsertContent =(schema)=> {
+export const generateSchemaFileInsertContent = (schema, schemaName) => {
     // Get the most recent directory
     const mostRecentDirectory = getMostRecentDirectory();
 
@@ -127,18 +127,13 @@ export const  generateSchemaFileInsertContent =(schema)=> {
         if (!existsSync(schemaDirectory)) {
             // Create the schema directory
             mkdirSync(schemaDirectory);
-            console.log(`Schema Directory created successfully.`);
+            c//onsole.log(`Schema Directory created successfully.`);
         } else {
-            console.log(`Schema Directory already exists.`);
+            //console.log(`Schema Directory already exists.`);
         }
 
-        // Get the list of files inside the schema directory
-        const files = readdirSync(schemaDirectory, { withFileTypes: true })
-            .filter(dirent => dirent.isFile() && dirent.name.startsWith('Schema') && dirent.name.endsWith(`.${fileType}`))
-            .map(dirent => dirent.name);
-
-        // Generate a new file named "SchemaX", where X is the number of existing files plus 1
-        const newSchemaFile = join(schemaDirectory, `Schema${files.length + 1}.${fileType}`);
+        // Create a new file with the provided schema name
+        const newSchemaFile = join(schemaDirectory, `${schemaName}.${fileType}`);
 
         // Create the new file with the provided schema
         writeFileSync(newSchemaFile, JSON.stringify(schema, null, 2), 'utf8');
@@ -147,6 +142,7 @@ export const  generateSchemaFileInsertContent =(schema)=> {
         console.log("The most recent directory does not exist.");
     }
 }
+
 
 
 export const generateMockDataFile = (mockData) => {

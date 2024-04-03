@@ -1,0 +1,34 @@
+openapi: 3.0.0
+info:
+  title: API with multiple content types
+  version: 1.0.0
+paths:
+  /endpoint:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MySchema'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/MySchema'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MySchema'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/MySchema'
+components:
+  schemas:
+    MySchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string

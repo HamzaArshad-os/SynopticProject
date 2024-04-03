@@ -39,10 +39,9 @@ JSONSchemaFaker.option({
 
 
 
-const validDataTypes = ['string', 'number', 'integer', 'object', 'array', 'boolean', 'null'];
-const validFormats = ['date-time', 'date', 'time', 'email', 'idn-email', 'hostname', 'idn-hostname', 'ipv4', 'ipv6', 'uri', 'uri-reference', 'iri', 'iri-reference', 'uuid', 'uri-template', 'json-pointer', 'relative-json-pointer', 'regex', 'faker', 'chance', 'casual'];
-
-const additionalSchemaProperties = ['multipleOf', 'exclusiveMinimum', 'exclusiveMaximum', 'pattern', 'maxLength', 'minLength', 'maxItems', 'minItems', 'uniqueItems', 'contains', 'maxProperties', 'minProperties', 'dependencies', 'propertyNames', 'if', 'then', 'else', 'allOf', 'anyOf', 'oneOf', 'not', 'media', 'discriminator', 'readOnly', 'writeOnly'];
+export const validDataTypes = ['string', 'number', 'integer', 'object', 'array', 'boolean', 'null'];
+export const validFormats = ['date-time', 'date', 'time', 'email', 'idn-email', 'hostname', 'idn-hostname', 'ipv4', 'ipv6', 'uri', 'uri-reference', 'iri', 'iri-reference', 'uuid', 'uri-template', 'json-pointer', 'relative-json-pointer', 'regex', 'faker', 'chance', 'casual'];
+export const additionalSchemaProperties = ['multipleOf', 'exclusiveMinimum', 'exclusiveMaximum', 'pattern', 'maxLength', 'minLength', 'maxItems', 'minItems', 'uniqueItems', 'contains', 'maxProperties', 'minProperties', 'dependencies', 'propertyNames', 'if', 'then', 'else', 'allOf', 'anyOf', 'oneOf', 'not', 'media', 'discriminator', 'readOnly', 'writeOnly'];
 
 export const generateSchema = (section) => {
   let schema = {};

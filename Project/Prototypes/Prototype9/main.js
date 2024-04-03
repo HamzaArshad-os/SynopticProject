@@ -40,25 +40,27 @@ async function main() {
     //const yamlFile = "Project/specificationExamples/exampleFullyResolved1.yaml"; 
     //const yamlFile = "Project/specificationExamples/exampleFullyResolved2.yaml"; 
     //const yamlFile = "Project/specificationExamples/specjsonVersion.json"; 
+    //const yamlFile = "Project/specificationExamples/exampleYAMLUnresolved.yaml"; 
+    //const yamlFile = "Project/specificationExamples/exampleYAMLResolved2MultiShema.yaml"; 
     
     try {
     
-       data = await yamlInteract.readYamlFile(yamlFile);
-       //console.log("readYamlFile " + JSON.stringify(data, null, 2));
+       data = await yamlInteract.readAndPreprocessYamlFile(yamlFile);
+      // console.log(JSON.stringify(data, null, 2));
+       //yamlInteract.printSchemaToName()
+       //console.log(JSON.stringify(yamlInteract.validButNotJSFFriendly, null, 2));
+       for (let schema of yamlInteract.allSchemas) {
+        console.log(schema);
+        }
     } catch (error) {  
       console.error(error);
     }
 
-    let serverInfo = yamlInteract.getServerInfo(data);  //Do this in final version for testing  do underenath
-    let url = "http://localhost:3333";
-    const condensedList = yamlInteract.generateCondensedDataList(data);
-    //console.log(condensedList);
-    //let a = yamlInteract.getSchemasForResponse(data ,"/accounts/{accountId}/orders", "get" ,200);
-    //console.log(JSON.stringify(a, null, 2));
-    //testgenerator.iterateEndpointList(data, condensedList,serverInfo[0].url);
-  
-     testgenerator.iterateEndpointListForSchemas(data, condensedList, url); 
-    //testgenerator.mockDataGenerationEntry(1);
+    //let serverInfo = yamlInteract.getServerInfo(data);  //Do this in final version for testing  do underenath
+    //let url = "http://localhost:3333";
+   // const condensedList = yamlInteract.generateCondensedDataList(data);
+    
+    //console.log(JSON.stringify(condensedList, null, 2));
   }
   
   main();
