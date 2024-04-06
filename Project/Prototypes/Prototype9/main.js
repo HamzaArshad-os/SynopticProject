@@ -3,28 +3,19 @@ import yaml from "js-yaml";
 import * as chai from "chai";
 import chaiHttp from "chai-http";
 import path from "path";
-import * as statushttp from 'statushttp';
-
 import * as yamlInteract from "./yamlInteract.js";
 import * as testgenerator from "./testgeneration.js";
+import * as datageneration from "./mockDataGeneration.js";
 import * as fileHandler from "./fileHandling.js";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import $RefParser from 'json-schema-ref-parser';
 
-chai.use(chaiHttp);
-const { assert } = chai;
 
 export const setEndPointPath = (newPath) => {  
   yamlInteract.endpoint_path = newPath;
 };
 
-
-
-
-
-
-
+export const setSchemasPath = (newPath) => {  
+  yamlInteract.endpoint_path = newPath;
+};
 
 async function main() {
 
@@ -45,13 +36,15 @@ async function main() {
     
     try {
     
-       data = await yamlInteract.readAndPreprocessYamlFile(yamlFile);
-      // console.log(JSON.stringify(data, null, 2));
-       //yamlInteract.printSchemaToName()
-       //console.log(JSON.stringify(yamlInteract.validButNotJSFFriendly, null, 2));
-       for (let schema of yamlInteract.allSchemas) {
-        console.log(schema);
-        }
+      data = await yamlInteract.readAndPreprocessYamlFile(yamlFile);
+      //yamlInteract.printuniqueSchemaGenMockData();
+      //console.log("qwertyuu");
+      //console.log(JSON.stringify(data, null, 2));
+      
+      //console.log("Size of uniqueSchemas: " +yamlInteract.schemaToName.size);
+      //console.log("Size of mockData isntances generated: " +datageneration.numberofmockDatas);
+      
+      
     } catch (error) {  
       console.error(error);
     }
@@ -59,11 +52,11 @@ async function main() {
     //let serverInfo = yamlInteract.getServerInfo(data);  //Do this in final version for testing  do underenath
     //let url = "http://localhost:3333";
    // const condensedList = yamlInteract.generateCondensedDataList(data);
-    
-    //console.log(JSON.stringify(condensedList, null, 2));
+  
+  
   }
   
   main();
-  //Organise generateData into its own file if possible.
-  // When it comes ot generating BadMockData no clue
-  //How to handle  AnyOf, aLLoF, OneOf, Not  for schemas ?
+
+
+  

@@ -74,10 +74,6 @@ export const getMostRecentDirectory=()=> {
     }
 }
 
-//console.log(getMostRecentDirectory());
-
-//createDirectoriesForOutputs();
-
 export const createSubDirectories=()=> {
     // Get the most recent directory
     const mostRecentDirectory = getMostRecentDirectory();
@@ -107,12 +103,7 @@ export const createSubDirectories=()=> {
     }
 }
 
-//createDirectoriesForOutputs();
-//createSubDirectories();
-
-
 export const fileType = "json";
-
 
 export const generateSchemaFileInsertContent = (schema, schemaName) => {
     // Get the most recent directory
@@ -143,9 +134,78 @@ export const generateSchemaFileInsertContent = (schema, schemaName) => {
     }
 }
 
+export const createGoodMockDataDirectory = () => {
+    // Get the most recent directory
+    const mostRecentDirectory = getMostRecentDirectory();
 
+    // Check if the most recent directory exists
+    if (mostRecentDirectory) {
+        // Construct the new directory path
+        const goodMockDataDirectory = join(mostRecentDirectory, "GeneratedMockData", "goodMockData");
 
-export const generateMockDataFile = (mockData) => {
+        // Create the new directory
+        if (!existsSync(goodMockDataDirectory)) {
+            mkdirSync(goodMockDataDirectory, { recursive: true });
+            console.log(`New directory "${goodMockDataDirectory}" created successfully.`);
+        } else {
+            console.log(`Directory "${goodMockDataDirectory}" already exists.`);
+        }
+    } else {
+        console.log("The most recent directory does not exist.");
+    }
+}
+
+export const createBadMockDataDirectory = () => {
+    // Get the most recent directory
+    const mostRecentDirectory = getMostRecentDirectory();
+
+    // Check if the most recent directory exists
+    if (mostRecentDirectory) {
+        // Construct the new directory path
+        const badMockDataDirectory = join(mostRecentDirectory, "GeneratedMockData", "badMockData");
+
+        // Create the new directory
+        if (!existsSync(badMockDataDirectory)) {
+            mkdirSync(badMockDataDirectory, { recursive: true });
+            console.log(`New directory "${badMockDataDirectory}" created successfully.`);
+        } else {
+            console.log(`Directory "${badMockDataDirectory}" already exists.`);
+        }
+    } else {
+        console.log("The most recent directory does not exist.");
+    }
+}
+
+export const generateMockDataFileInsertContent = (mockData, mockDataName, typeOfMockData) => {
+    // Get the most recent directory
+    const mostRecentDirectory = getMostRecentDirectory();
+
+    // Check if the most recent directory exists
+    if (mostRecentDirectory) {
+        // Construct the new directory path based on the type of mock data
+        const mockDataDirectory = join(mostRecentDirectory, "GeneratedMockData", typeOfMockData);
+
+        // Check if the mock data directory already exists
+        if (!existsSync(mockDataDirectory)) {
+            // Create the mock data directory
+            mkdirSync(mockDataDirectory, { recursive: true });
+            console.log(`Mock Data Directory created successfully.`);
+        } else {
+            console.log(`Mock Data Directory already exists.`);
+        }
+
+        // Create a new file with the provided mock data name
+        const newMockDataFile = join(mockDataDirectory, `${mockDataName}.${fileType}`);
+
+        // Create the new file with the provided mock data
+        writeFileSync(newMockDataFile, JSON.stringify(mockData, null, 2), 'utf8');
+        console.log(`New file "${newMockDataFile}" created successfully.`);
+    } else {
+        console.log("The most recent directory does not exist.");
+    }
+}
+
+export const generateMockDataFileGoodData = (mockData) => {
     // Get the most recent directory
     const mostRecentDirectory = getMostRecentDirectory();
 

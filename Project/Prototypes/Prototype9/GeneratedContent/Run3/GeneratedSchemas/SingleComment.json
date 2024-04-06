@@ -1,0 +1,23 @@
+{
+  "required": [
+    "comment_id",
+    "comment_text",
+    "date_published"
+  ],
+  "type": "object",
+  "properties": {
+    "comment_id": {
+      "type": "integer",
+      "example": 982
+    },
+    "date_published": {
+      "type": "string",
+      "format": "date",
+      "example": "2022-08-14T00:00:00.000Z"
+    },
+    "comment_text": {
+      "type": "string",
+      "example": "Great article. Loved it."
+    }
+  }
+}

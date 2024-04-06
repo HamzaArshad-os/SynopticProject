@@ -1,23 +1,16 @@
-import fs, { copyFileSync } from "fs";
-import yaml from "js-yaml";
-import * as chai from "chai";
-import chaiHttp from "chai-http";
-import path from "path";
-import * as statushttp from "statushttp";
 
 import * as yamlInteract from "./yamlInteract.js";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import $RefParser from "json-schema-ref-parser";
+import * as fileHandler from "./fileHandling.js";
 import { JSONSchemaFaker } from "json-schema-faker";
 import Ajv from "ajv";
 
 const ajv = new Ajv();
-chai.use(chaiHttp);
-const { assert } = chai;
+
 
 export let variables = [];
 export let uniqueSchemas = [];
+
+export let shouldLog = true; // Set this to false to disable logging
 
 export function readVariables() {
   variables.forEach((variable, index) => {
@@ -30,18 +23,95 @@ export function readVariables() {
 //});
 
 JSONSchemaFaker.option({
-  useExamplesValue: true,
+  useExamplesValue: false,
   failOnInvalidFormat: false, // Don't throw an error if format is invalid
   failOnInvalidTypes: false, // Don't throw an error if type is invalid
   alwaysFakeOptionals: true, //generate schemas for none required aswell
   additionalProperties: false
 });
 
+export const updateJSFOptions = (optionsArray) => {
+  optionsArray.forEach(option => {
+    JSONSchemaFaker.option(option);
+  });
+};
 
+//usageofJSFOptions:
+      //let newOptions = [
+       // { useExamplesValue: false },
+       // { failOnInvalidFormat: true },
+       // { failOnInvalidTypes: true },
+       // { alwaysFakeOptionals: false },
+      //  { additionalProperties: true }
+     // ];
+      
+      //datageneration.updateJSFOptions(newOptions);
 
 export const validDataTypes = ['string', 'number', 'integer', 'object', 'array', 'boolean', 'null'];
 export const validFormats = ['date-time', 'date', 'time', 'email', 'idn-email', 'hostname', 'idn-hostname', 'ipv4', 'ipv6', 'uri', 'uri-reference', 'iri', 'iri-reference', 'uuid', 'uri-template', 'json-pointer', 'relative-json-pointer', 'regex', 'faker', 'chance', 'casual'];
 export const additionalSchemaProperties = ['multipleOf', 'exclusiveMinimum', 'exclusiveMaximum', 'pattern', 'maxLength', 'minLength', 'maxItems', 'minItems', 'uniqueItems', 'contains', 'maxProperties', 'minProperties', 'dependencies', 'propertyNames', 'if', 'then', 'else', 'allOf', 'anyOf', 'oneOf', 'not', 'media', 'discriminator', 'readOnly', 'writeOnly'];
+
+export let count = 2;
+export let numberofmockDatas = 0;
+
+export const generateMockData = (schema, name, mockType) => {
+  let mockData = {};
+  let heldMockData = [];
+  try {
+    for (let i = 0; i < count; i++) {
+      // Generate mock data for the current schema
+      let data = JSONSchemaFaker.generate(schema);
+
+      // If a title is provided, use it as the key, otherwise use the index
+      let key = schema.title ? schema.title : name;
+
+      // Remove additional properties from objects
+      if (schema.type === 'object' && schema.properties) {
+        Object.keys(data).forEach(prop => {
+          if (!schema.properties.hasOwnProperty(prop)) {
+            delete data[prop];
+          }
+        });
+      }
+
+      // Remove additional properties from arrays
+      if (schema.type === 'array' && schema.items && schema.items.properties) {
+        data = data.map(item => {
+          const filteredItem = {};
+          Object.keys(item).forEach(prop => {
+            if (schema.items.properties.hasOwnProperty(prop)) {
+              filteredItem[prop] = item[prop];
+            }
+          });
+          return filteredItem;
+        });
+      }
+
+      // Add the generated data to the mock data object with the key
+      mockData[key] = data;
+      heldMockData.push(data);
+    }
+    numberofmockDatas += 1;
+    fileHandler.generateMockDataFileInsertContent(heldMockData, name, mockType);
+  } catch (error) {
+    console.log(
+      `json-schema-faker could not generate data for schema: ${JSON.stringify(schema)}`
+    );
+
+    console.log("\nEnd \n" + error.message)
+  }
+
+  return mockData;
+};
+
+
+
+
+
+
+
+
+
 
 export const generateSchema = (section) => {
   let schema = {};
@@ -204,7 +274,6 @@ export const generateSchema = (section) => {
   return { schema, unusedInfo };
 }
 
-
 // Function to generate a schema for each property in a properties object
 function generatePropertiesSchema(properties) {
   let schemaProperties = {};
@@ -237,48 +306,3 @@ export const generateSchemas = (sections) => {
   }
   return { schemas, unusedInfos };
 };
-
-
-
-
-const isValidSchema = (schema) => {
-  // Use the AJV library to validate the schema
-  const valid = ajv.validateSchema(schema);
-  return valid;
-};
-
-
-
-export const generateMockData = (schema) => {
-  let mockData = {};
-
-  try {
-    // Generate mock data for the current schema
-    let data = JSONSchemaFaker.generate(schema);
-
-    // If a title is provided, use it as the key, otherwise use the index
-    let key = schema.title ? schema.title : `mockData${0}`;
-
-    // Remove additional properties that are not defined in the schema
-    if (schema.type === 'object' && schema.properties) {
-      Object.keys(data).forEach(prop => {
-        if (!schema.properties.hasOwnProperty(prop)) {
-          delete data[prop];
-        }
-      });
-    }
-
-    // Add the generated data to the mock data object with the key
-    mockData[key] = data;
-  } catch (error) {
-    console.log(
-      `json-schema-faker could not generate data for schema: ${JSON.stringify(schema)}`
-    );
-
-    console.log("\nEnd \n" + error.message)
-  }
-
-  return mockData;
-};
-
-
