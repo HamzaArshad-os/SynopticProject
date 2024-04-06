@@ -16,111 +16,33 @@ import { writeFileSync, mkdirSync, existsSync, rmdirSync } from 'fs';
 chai.use(chaiHttp);
 const { assert } = chai;
 
-export const getSectionsIncludingSchemas = (data,endpoint,method,responseType) => {
-  let schemasForThisTest = {
-    parameters: [],
-    requestHeader: [],
-    requestBody: [],
-    responses: [],
-  };
-
-  // Get schemas for parameters
-  let parameterSchemas = yamlInteract.getParamtersContentForEndpointMethod(data,
-    endpoint,
-    method
-  );
-
-  if (parameterSchemas.length > 0) {
-    schemasForThisTest.parameters.push(...parameterSchemas);
-  }
-
-  //Get schemas for Headers
-  let headerSchemas = yamlInteract.getHeadersContentForEndpointMethod(
-    data,
-    endpoint,
-    method
-  );
-  if (headerSchemas.length > 0) {
-    schemasForThisTest.requestHeader.push(...headerSchemas);
-  }
-
-  // Get schemas for requestBody
-  let requestBodySchemas = yamlInteract.getRequestContentForEndpointMethod(
-    data,
-    endpoint,
-    method
-  );
-  if (requestBodySchemas.length > 0) {
-    schemasForThisTest.requestBody.push(...requestBodySchemas);
-  }
-
-  // Get schemas for responses
-  let responseSchemas = yamlInteract.getResponseContentForEndpointMethod(
-    data,
-    endpoint,
-    method,
-    responseType
-  );
-  if (responseSchemas.length > 0) {
-    schemasForThisTest.responses.push(...responseSchemas);
-  }
-
-  return schemasForThisTest;
-};
-
-export const iterateEndpointListForSchemas = (data, endpointList, url) => {
-  let allData = {};
-
-  for (let endpoint in endpointList) {
-    for (let method in endpointList[endpoint]) {
-      for (let response of endpointList[endpoint][method]) {
-        const ContentAndSchemas = getSectionsIncludingSchemas(data, endpoint, method, response);
-        console.log(endpoint, method , response)
-        const sections = ['parameters', 'requestHeader', 'requestBody', 'responses'];
-        console.log("QWERTY")  
-        console.log(JSON.stringify(ContentAndSchemas, null, 2));
-        console.log("QWESSSSSSRTY")  
-        sections.forEach(sectionName => {
-          const section = ContentAndSchemas[sectionName];
-          const { schemas, unusedInfos } = datageneration.generateSchemas(section);
-          
-         
-          //const mockData = datageneration.generateMockData(schemas);
-          //console.log(JSON.stringify(section, null, 2));
-
-          //allData[sectionName] = {
-           // "MockData" : mockData,
-          //  "Schemas" : schemas,
-          // "unusedInfo" :unusedInfos   
-          //};
 
 
-        });
-        //console.log(datageneration.variables.length);
-        //datageneration.readVariables();
-        //contenttype
-        //allData = {}; clear the data 
-
-
-        //console.log(JSON.stringify(allData, null, 2));
+export const iterateEndpointforTestCases = (data) => {
+  
+  for (let endpoint in data.paths) {
+    const endpointData = data.paths[endpoint];
+    for (const method in endpointData) {
+      console.log(`test case for ${method.toUpperCase()} ${endpoint}`);
+      const responses = endpointData[method].responses;
+      for (const statusCode in responses) {
+        console.log(`Test case for status code ${statusCode}:`);
+        console.log(JSON.stringify(responses[statusCode], null, 2));
       }
-    }
+    } 
   }
-  //console.log("Unique Schemas");
-  //
-  try{
-    for (var i= 0; i<= datageneration.uniqueSchemas.length; i++){
-      //console.log(datageneration.uniqueSchemas[i]);
-      fileHandler.generateSchemaFileInsertContent(JSON.parse(datageneration.uniqueSchemas[i]));
-    }
-  }
-  catch(error){
-    console.log("Issue with generating Schemas , unhandled scneario results in undefined being added to unique Schemas")
-    //console.log(error)  
-  }
-
- // console.log(checkForDuplicates(datageneration.uniqueSchemas));
 };
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -135,41 +57,6 @@ const generateRandomString = () => {
   }
   return result;
 }
-
-
-
-
-export const mockDataGenerationEntry = (count) => {
-  datageneration.uniqueSchemas.forEach((schemaString) => {
-    let tobeAddedToFileArray = [];
-    for (let i = 0; i < count; i++) {
-      let jsonObject = JSON.parse(schemaString);
-      console.log("Generating mock Datas for:");
-      console.log(jsonObject); // Logs the JSON object to the console
-      let data = datageneration.generateMockData(jsonObject);
-      console.log(JSON.stringify(data, null, 2));
-      tobeAddedToFileArray.push(data);
-    }
-
-    fileHandler.generateMockDataFile(tobeAddedToFileArray);
-   
-  });
-}
-
-
-
-const checkForDuplicates = (schemas) => {
-  // Create a Set from the array of schemas
-  const uniqueSchemasSet = new Set(schemas);
-
-  // If the size of the Set is less than the length of the array, there are duplicates
-  if (uniqueSchemasSet.size < schemas.length) {
-    return 'There are duplicates.';
-  } else {
-    return 'There are no duplicates.';
-  }
-};
-
 
 export const javascriptTestTopOfFile = (data) => {
   let javascripttesTopOfFile = "";

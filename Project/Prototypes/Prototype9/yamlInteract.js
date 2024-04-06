@@ -2,6 +2,7 @@ import fs from "fs";
 import yaml from "js-yaml";
 import * as statushttp from 'statushttp';
 import * as datageneration from "./mockDataGeneration.js";
+import * as testHandler from "./testGeneration.js";
 import * as fileHandler from "./fileHandling.js";
 import $RefParser from 'json-schema-ref-parser';
 
@@ -14,11 +15,9 @@ export const endpoint_path = 'paths'; // User can change this
 export let referencedSchemas = new Map();
 export let allSchemas = [];
 
-
-
 function extractSchemas(node, path = '', method = '', contentType = '', location = '', schemaName = '') {
   if (typeof node === "object" && node !== null) {
-    if (node.type && (node.properties || node.items)) {
+    if (node.type) { 
       // This looks like a schema 
       let error = validateSchema(node);
       if (error) {
@@ -36,6 +35,9 @@ function extractSchemas(node, path = '', method = '', contentType = '', location
       // Check if the schema already exists in the map
       let existingSchemaInfo = uniqueSchemaGenMockData.get(JSON.stringify(node));
       if (!existingSchemaInfo) {
+
+        
+        console.log(JSON.stringify(info,null, 2));
         // Add the schema to the map
         uniqueSchemaGenMockData.set(JSON.stringify(node), info);
         // Generate a new file for the schema
@@ -58,11 +60,7 @@ function extractSchemas(node, path = '', method = '', contentType = '', location
   } 
 }
 
-
-
-
-
-
+//Entry point
 export const readAndPreprocessYamlFile = async (yamlFile) => {
   let fileContents = fs.readFileSync(yamlFile, "utf8");
   let data = yaml.load(fileContents);
@@ -79,10 +77,11 @@ export const readAndPreprocessYamlFile = async (yamlFile) => {
 
   // Then generate the condensed data list and preprocess the rest of the data
   generateCondensedDataListAndPreprocess(data);
+  
+  //testHandler.iterateEndpointforTestCases(data);
 
   return data;
 }
-
 
 export const generateCondensedDataListAndPreprocess = (data) => {  
   let endpointList = {};
@@ -146,7 +145,6 @@ export const generateCondensedDataListAndPreprocess = (data) => {
   return endpointList;
 }
 
-
 function validateSchema(schema) {
   if (!datageneration.validDataTypes.includes(schema.type)) {
     return `Invalid data type: ${schema.type}`;
@@ -182,57 +180,4 @@ export const printuniqueSchemaGenMockData = () =>{
   }
 }
 
-//Needs testing for getting secuirtySchemas
-export const getHeadersContentForEndpointMethod = (data, endpoint, method) => {
-  let headers = [];
-
-  // Check for global headers
-  if (data.components && data.components.parameters) {
-    for (let param of Object.values(data.components.parameters)) {
-      if (param.in === 'header') {
-        headers.push(param);
-      }
-    }
-  }
-
-  // Check for path-level headers
-  if (data.paths[endpoint].parameters) {
-    for (let param of data.paths[endpoint].parameters) {
-      if (param.in === 'header') {
-        headers.push(param);
-      }
-    }
-  }
-
-  // Check for operation-level headers
-  if (data.paths[endpoint][method].parameters) {
-    for (let param of data.paths[endpoint][method].parameters) {
-      if (param.in === 'header') {
-        headers.push(param);
-      }
-    }
-  }
-
-  // Check for response headers
-  if (data.paths[endpoint][method].responses) {
-    for (let response of Object.values(data.paths[endpoint][method].responses)) {
-      if (response.headers) {
-        for (let header of Object.values(response.headers)) {
-          headers.push(header);
-        }
-      }
-    }
-  }
-
-  // Check for security headers
-  if (data.components && data.components.securitySchemes) {
-    for (let scheme of Object.values(data.components.securitySchemes)) {
-      if (scheme.in === 'header') {
-        headers.push(scheme);
-      }
-    }
-  }
-
-  return headers;
-};
 

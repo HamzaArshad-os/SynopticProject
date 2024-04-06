@@ -4,7 +4,7 @@ import * as chai from "chai";
 import chaiHttp from "chai-http";
 import path from "path";
 import * as yamlInteract from "./yamlInteract.js";
-import * as testgenerator from "./testgeneration.js";
+import * as testgenerator from "./testGeneration.js";
 import * as datageneration from "./mockDataGeneration.js";
 import * as fileHandler from "./fileHandling.js";
 
@@ -27,8 +27,8 @@ async function main() {
    
     //const yamlFile = "Project/specificationExamples/tempResolved.yaml"; 
     //const yamlFile = "Project/specificationExamples/tradingviewSpecResolvedOnly.yaml"; 
-    const yamlFile = "Project/specificationExamples/exampleYAMLResolved.yaml"; 
-    //const yamlFile = "Project/specificationExamples/exampleFullyResolved1.yaml"; 
+    //const yamlFile = "Project/specificationExamples/exampleYAMLResolved.yaml"; 
+    const yamlFile = "Project/specificationExamples/exampleFullyResolved1.yaml"; 
     //const yamlFile = "Project/specificationExamples/exampleFullyResolved2.yaml"; 
     //const yamlFile = "Project/specificationExamples/specjsonVersion.json"; 
     //const yamlFile = "Project/specificationExamples/exampleYAMLUnresolved.yaml"; 
