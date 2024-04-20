@@ -1,0 +1,8 @@
+{
+  "github.copilot.chat.terminalChatLocation": "chatView",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "prettier.proseWrap": "preserve",
+  "prettier.printWidth": 200
+}
