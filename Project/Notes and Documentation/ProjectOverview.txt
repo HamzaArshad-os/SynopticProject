@@ -4,5 +4,14 @@ and will return a set of tests in a supported language.
 Supported languages:
 Javascript
 
-The aim of this tool is to behave in a plug and play manner. Wehre a
-user is able to give theyre Specification and be returned a indepth set of tests. The user should be able to just copy paste these tests into there test directory, and should be able to just simply test.
+Supported Testing frameworks:
+Chai
+MockData is generated in:
+JSON
+MockData is generated using JSON-Schema-Faker.
+
+
+The aim of this tool is to behave in a plug and play manner. Where a
+user is able to give a specification and be returned a  set of tests. The user should be able to just copy paste these tests into there test directory and with minimal modifcations be able to use them in htere preexisiting testing enviornment.
+
+This tool will geenrate valid and invalid mockData for testing purposes.

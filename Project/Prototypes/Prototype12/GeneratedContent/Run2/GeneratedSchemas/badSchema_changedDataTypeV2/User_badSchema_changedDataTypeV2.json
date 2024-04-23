@@ -1,0 +1,22 @@
+[
+  {
+    "type": "object",
+    "properties": {
+      "id": {},
+      "name": {
+        "type": "string"
+      }
+    }
+  },
+  {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "name": {
+        "type": "number"
+      }
+    }
+  }
+]

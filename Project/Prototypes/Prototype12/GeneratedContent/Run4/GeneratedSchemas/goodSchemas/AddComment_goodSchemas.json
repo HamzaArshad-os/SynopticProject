@@ -1,0 +1,12 @@
+{
+  "required": [
+    "comment_text"
+  ],
+  "type": "object",
+  "properties": {
+    "comment_text": {
+      "type": "string",
+      "example": "Great article. Loved it."
+    }
+  }
+}

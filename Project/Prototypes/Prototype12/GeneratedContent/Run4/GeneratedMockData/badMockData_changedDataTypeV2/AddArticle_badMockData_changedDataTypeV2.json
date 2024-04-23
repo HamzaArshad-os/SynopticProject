@@ -1,0 +1,42 @@
+[
+  [
+    {
+      "title": 35256395,
+      "author": "veniam in consectetur",
+      "article_text": "dolor"
+    },
+    {
+      "title": -76598542,
+      "author": "fugiat aliqua",
+      "article_text": "consectetur commodo quis"
+    }
+  ],
+  [
+    {
+      "title": "voluptate dolore",
+      "author": 63032037,
+      "article_text": "officia"
+    },
+    {
+      "title": "non",
+      "author": -64795259,
+      "article_text": "labore dolor in sed est"
+    }
+  ],
+  [
+    {
+      "title": "in cupidatat amet eu",
+      "author": "incididunt mollit sed",
+      "article_text": {
+        "example": "This is the articles main body text."
+      }
+    },
+    {
+      "title": "voluptate do",
+      "author": "mollit reprehenderit",
+      "article_text": {
+        "example": "This is the articles main body text."
+      }
+    }
+  ]
+]

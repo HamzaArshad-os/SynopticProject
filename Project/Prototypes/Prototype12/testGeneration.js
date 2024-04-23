@@ -63,7 +63,7 @@ export const testgenerationEntryPoint = (data) => {
         for (let parameterData of parametersData) {
           let name = extractInfo(parameterData, "name");
           let goodMockData = extractInfo(parameterData, "goodMockData");
-          
+
           let generatedVariable = jsGenerateParamterVariable(name, goodMockData[0]);
           if (generatedVariable) {
             if (generatedVariable) {
@@ -73,6 +73,7 @@ export const testgenerationEntryPoint = (data) => {
           }
         }
         // handle the endpoint path
+        endpointForThisTestInsertedIntoTest = endpoint;
         for (let parameterData of parametersData) {
           let name = extractInfo(parameterData, "name");
           let modifiedEndpoint = "";
@@ -80,11 +81,13 @@ export const testgenerationEntryPoint = (data) => {
           // Iterate over the usage array
           for (let usage of parameterData.usage) {
             let path = extractInfo(usage, "path");
+            //console.log(endpoint, method, response);
+
             let pathOrQuery = extractInfo(usage, "inPathOrQuery");
             if (path === endpoint) {
               if (pathOrQuery === "path") {
                 let modifiedPath = replacePathParametersWithVariables(path, names);
-                //console.log(modifiedPath);
+                console.log(modifiedPath);
                 modifiedEndpoint = modifiedPath;
                 // Assign modifiedEndpoint to endpointForThisTestInsertedIntoTest
                 endpointForThisTestInsertedIntoTest = modifiedEndpoint;
@@ -313,7 +316,7 @@ export const jsGetDeleteTemplate = (data, endpoint, method, allRelevantHeaders, 
   javascriptTest += `  it('should return status ${response}', () => {\n`;
   javascriptTest += `    return chai\n`;
   javascriptTest += `      .request('${url}')\n`;
-  javascriptTest += `      .${method}(${endpoint})\n`;
+  javascriptTest += `      .${method}("${endpoint}")\n`;
   javascriptTest += `      ${requestHeadersInsertedIntoTest}\n`;
   javascriptTest += `      .then((res) => {\n`;
   javascriptTest += `        expect(res).to.have.status(${response});\n`;
@@ -326,9 +329,6 @@ export const jsGetDeleteTemplate = (data, endpoint, method, allRelevantHeaders, 
   javascriptTest += `  });\n`;
   javascriptTest += `});\n`;
 
-
-
-  
   return javascriptTest;
 };
 export const jsPostPutPatchTemplate = (data, endpoint, method, allRelevantHeaders, response, responseStructure, responseHeaders, mockDataFilePath, setTestCode) => {
@@ -351,7 +351,7 @@ export const jsPostPutPatchTemplate = (data, endpoint, method, allRelevantHeader
   } else {
     responseHeadersInsertedIntoTest = "";
   }
- 
+
   let javascriptTest = "";
   javascriptTest += `\ndescribe('${description}', () => {\n`;
   javascriptTest += `  before(() => {\n`;
@@ -361,7 +361,7 @@ export const jsPostPutPatchTemplate = (data, endpoint, method, allRelevantHeader
   javascriptTest += `    it('Should return status ${response}: ', () => {\n`;
   javascriptTest += `      return chai\n`;
   javascriptTest += `        .request('${url}')\n`;
-  javascriptTest += `        .${method}(${endpoint})\n`;
+  javascriptTest += `        .${method}("${endpoint}")\n`;
   javascriptTest += `        ${requestHeadersInsertedIntoTest}\n`;
   javascriptTest += `        .send(item)\n`;
   javascriptTest += `        ${setTestCode}\n`;
@@ -376,7 +376,6 @@ export const jsPostPutPatchTemplate = (data, endpoint, method, allRelevantHeader
   javascriptTest += `    });\n`;
   javascriptTest += `  });\n`;
   javascriptTest += `});\n`;
- 
 
   return javascriptTest;
 };
@@ -511,7 +510,7 @@ function jsGenerateHeaderVariable(name, value) {
   let variableName = name.toUpperCase();
   let variableValue = value; // Replace this with the actual value or a variable holding the value
 
-  finishedVariable += `let ${variableName} = '${variableValue}';\n`; 
+  finishedVariable += `let ${variableName} = '${variableValue}';\n`;
 
   // Check if the finishedVariable already exists in the array
   if (!definedVariablesAtTopOfFile.includes(finishedVariable)) {
@@ -533,22 +532,23 @@ function replacePathParametersWithVariables(path, names) {
     if (segments[i].startsWith("{") && segments[i].endsWith("}")) {
       // Extract the parameter name
       let paramName = segments[i].slice(1, -1);
-
       // If the parameter name is in the names array
       if (names.includes(paramName)) {
         paramName = paramName.toUpperCase();
         // Replace the segment with the variable representation
-        segments[i] = `"+${paramName}+"`;
+        segments[i] = `+${paramName}+`;
       }
     }
   }
   // Join the segments back into a path
   path = segments.join("/");
+  // Remove trailing "+"
+  if (path.endsWith("+")) {
+    path = path.slice(0, -1);
+  }
   // Return the modified path
-  return `"/${path}"`;
+  return path;
 }
-
-
 
 function generateQueryString(name) {
   let nameUpper = name.toUpperCase();

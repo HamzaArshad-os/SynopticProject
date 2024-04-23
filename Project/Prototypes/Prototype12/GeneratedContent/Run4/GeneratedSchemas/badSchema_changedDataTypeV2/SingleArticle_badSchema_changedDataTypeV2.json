@@ -1,0 +1,235 @@
+[
+  {
+    "required": [
+      "article_id",
+      "article_text",
+      "author",
+      "date_edited",
+      "date_published",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "article_id": {
+        "type": "string",
+        "example": 7
+      },
+      "title": {
+        "type": "string",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "string",
+        "example": "Megan"
+      },
+      "date_published": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-08-04T00:00:00.000Z"
+      },
+      "date_edited": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-09-24T00:00:00.000Z"
+      },
+      "article_text": {
+        "type": "string",
+        "example": "This is the articles main body text."
+      }
+    }
+  },
+  {
+    "required": [
+      "article_id",
+      "article_text",
+      "author",
+      "date_edited",
+      "date_published",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "article_id": {
+        "type": "integer",
+        "example": 7
+      },
+      "title": {
+        "type": "number",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "string",
+        "example": "Megan"
+      },
+      "date_published": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-08-04T00:00:00.000Z"
+      },
+      "date_edited": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-09-24T00:00:00.000Z"
+      },
+      "article_text": {
+        "type": "string",
+        "example": "This is the articles main body text."
+      }
+    }
+  },
+  {
+    "required": [
+      "article_id",
+      "article_text",
+      "author",
+      "date_edited",
+      "date_published",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "article_id": {
+        "type": "integer",
+        "example": 7
+      },
+      "title": {
+        "type": "string",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "number",
+        "example": "Megan"
+      },
+      "date_published": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-08-04T00:00:00.000Z"
+      },
+      "date_edited": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-09-24T00:00:00.000Z"
+      },
+      "article_text": {
+        "type": "string",
+        "example": "This is the articles main body text."
+      }
+    }
+  },
+  {
+    "required": [
+      "article_id",
+      "article_text",
+      "author",
+      "date_edited",
+      "date_published",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "article_id": {
+        "type": "integer",
+        "example": 7
+      },
+      "title": {
+        "type": "string",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "string",
+        "example": "Megan"
+      },
+      "date_published": {
+        "type": "integer",
+        "format": "date",
+        "example": "2022-08-04T00:00:00.000Z"
+      },
+      "date_edited": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-09-24T00:00:00.000Z"
+      },
+      "article_text": {
+        "type": "string",
+        "example": "This is the articles main body text."
+      }
+    }
+  },
+  {
+    "required": [
+      "article_id",
+      "article_text",
+      "author",
+      "date_edited",
+      "date_published",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "article_id": {
+        "type": "integer",
+        "example": 7
+      },
+      "title": {
+        "type": "string",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "string",
+        "example": "Megan"
+      },
+      "date_published": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-08-04T00:00:00.000Z"
+      },
+      "date_edited": {
+        "type": "number",
+        "format": "date",
+        "example": "2022-09-24T00:00:00.000Z"
+      },
+      "article_text": {
+        "type": "string",
+        "example": "This is the articles main body text."
+      }
+    }
+  },
+  {
+    "required": [
+      "article_id",
+      "article_text",
+      "author",
+      "date_edited",
+      "date_published",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "article_id": {
+        "type": "integer",
+        "example": 7
+      },
+      "title": {
+        "type": "string",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "string",
+        "example": "Megan"
+      },
+      "date_published": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-08-04T00:00:00.000Z"
+      },
+      "date_edited": {
+        "type": "string",
+        "format": "date",
+        "example": "2022-09-24T00:00:00.000Z"
+      },
+      "article_text": {
+        "example": "This is the articles main body text."
+      }
+    }
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "required": [
+      "article_text",
+      "author",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "integer",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "string",
+        "example": "Megan"
+      },
+      "article_text": {
+        "type": "string",
+        "example": "This is the articles main body text."
+      }
+    }
+  },
+  {
+    "required": [
+      "article_text",
+      "author",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "integer",
+        "example": "Megan"
+      },
+      "article_text": {
+        "type": "string",
+        "example": "This is the articles main body text."
+      }
+    }
+  },
+  {
+    "required": [
+      "article_text",
+      "author",
+      "title"
+    ],
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "example": "5 Best Blog Engines"
+      },
+      "author": {
+        "type": "string",
+        "example": "Megan"
+      },
+      "article_text": {
+        "example": "This is the articles main body text."
+      }
+    }
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "required": [
+      "comment_text"
+    ],
+    "type": "object",
+    "properties": {
+      "comment_text": {
+        "type": "integer",
+        "example": "Great article. Loved it."
+      }
+    }
+  }
+]

@@ -25,9 +25,9 @@ async function main() {
   let data = "";
 
   //Insert your specification here
-  const yamlFile = "Project/specificationExamples/generalSpecification.yaml";
+ // const yamlFile = "Project/specificationExamples/generalSpecification.yaml";
   //const yamlFile = "Project/specificationExamples/tradingviewSpecResolvedOnly.yaml";
-  //const yamlFile = "Project/specificationExamples/exampleYAMLResolved.yaml";
+   const yamlFile = "Project/specificationExamples/exampleYAMLResolved.yaml";
   // const yamlFile = "Project/specificationExamples/exampleFullyResolved2.yaml";
   //const yamlFile = "Project/specificationExamples/exampleYAMLUnresolved.yaml";
   //const yamlFile = "Project/specificationExamples/exampleYAMLResolved2MultiShema.yaml";

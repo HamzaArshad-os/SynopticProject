@@ -22,49 +22,21 @@ Application will now ignore String Rules if it results in not allowing for dates
 User is now able to view all formats define din specification and mannnually change if rules are applied to them or not
 
 current support for 
-Path Parameters: These are defined in the parameters section of the path item object. They are part of the URL path (e.g., /articles/{article_id}). Being developedd
-Query Parameters: These are also defined in the parameters section but are appended to the URL after a ? (e.g., /articles?sort=desc). No
-Header Parameters: These are defined in the parameters section and are included in the request header. No
-Cookie Parameters: These are defined in the parameters section and are included in the Cookie header. No
+Path Parameters: These are defined in the parameters section of the path item object. They are part of the URL path (e.g., /articles/{article_id}). Yes
+Query Parameters: These are also defined in the parameters section but are appended to the URL after a ? (e.g., /articles?sort=desc). Yes
+Header Parameters: These are defined in the parameters section and are included in the request header. Yes
 
 
-Formatting extension will add commas where they should not be sometime
+
+
 
 Please note that this code assumes that your OpenAPI specification is 
 correctly formatted and follows the OpenAPI Specification (OAS) version 3.0.0. 
 If your specification uses a different version of OAS or has a different format, 
-you may need to adjust the code accordingly. Also, this code does not handle all 
-possible cases and features of OAS, such as parameters in other locations than the 
-path or header, multiple content types, etc. You may need to extend this code to 
-handle these cases and features if they are used in your specification.
 
 Currently only generates json mockData format 
 
 
-Handling Resolved and Unresolved YAML Formats: The project’s plan to support both resolved and unresolved YAML formats introduces some challenges. Here’s how it could impact your current code:
-
-Schema and Parameter References:
-
-In resolved YAML, schema and parameter references are replaced with their actual definitions. So, if your code relies on references (e.g., $ref), it will need to handle both resolved and unresolved formats.
-When extracting schema and parameter data, you’ll need to account for whether the YAML is resolved or unresolved. Resolved YAML will have direct definitions, while unresolved YAML will have references.
-Consider using conditional logic to check whether a reference exists and resolve it accordingly.
-Validation and Consistency:
-
-Resolved YAML ensures consistency because all references are resolved. However, unresolved YAML may have inconsistencies if references point to different definitions.
-Your code should validate the consistency of schema and parameter definitions across resolved and unresolved formats. For example, ensure that a referenced schema matches its definition.
-Handling Circular References:
-
-Circular references (where schemas or parameters reference each other in a loop) can occur in unresolved YAML.
-Detecting and handling circular references becomes crucial. You might need to limit recursion depth or handle such cases gracefully.
-Performance Considerations:
-
-Resolving references can be computationally expensive. If your project deals with large YAML files, performance might be impacted.
-Optimize reference resolution to avoid unnecessary reprocessing.
-Updating Paths:
-
-When switching between resolved and unresolved formats, ensure that your code updates the paths (defaultSchemaPath and defaultParameterPath) accordingly.
-Resolved YAML may have different paths due to direct definitions.
-In summary, handling both resolved and unresolved YAML formats requires careful consideration of references, validation, circular dependencies, and performance. Plan your code architecture accordingly to accommodate these challenges.
 
 
 try to incprroate 
