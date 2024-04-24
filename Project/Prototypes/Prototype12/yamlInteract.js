@@ -620,10 +620,12 @@ export const getServerInfo = (data) => {
       });
     }
   }
-  if (!serverInfo || !serverInfo.url) {
+  if (!serverInfo.length || !serverInfo[0].url) {
     return [{ url: "no url" }];
   }
+  return serverInfo;
 };
+
 
 export const getStatusDescription = (statusCode) => {
   return statushttp.statusDesc[statusCode];
@@ -687,11 +689,6 @@ export const GenerateBadSchema = (schema, schemaName, info) => {
             modificationTypes.push("changedDataType"); // Store the type of modification
           }
           //Add more modifcations to the schema strcture here, Can place your own make fucntion that take sin a schema and modifes the datatypes to your preference. If wish to modify format  or addional prperites, same thing in other sections above or below this if statement
-          let changedDataTypeSchemav2 = changeDataTypev2(schema, newPath);
-          if (changedDataTypeSchemav2) {
-            returnedModififiedSchemas.push(changedDataTypeSchemav2);
-            modificationTypes.push("changedDataTypeV2"); // Store the type of modification
-          }
         }
 
         // Detect if the line is an additional property

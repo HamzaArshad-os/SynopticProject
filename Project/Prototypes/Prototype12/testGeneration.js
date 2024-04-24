@@ -87,7 +87,7 @@ export const testgenerationEntryPoint = (data) => {
             if (path === endpoint) {
               if (pathOrQuery === "path") {
                 let modifiedPath = replacePathParametersWithVariables(path, names);
-                console.log(modifiedPath);
+                //console.log(modifiedPath);
                 modifiedEndpoint = modifiedPath;
                 // Assign modifiedEndpoint to endpointForThisTestInsertedIntoTest
                 endpointForThisTestInsertedIntoTest = modifiedEndpoint;
@@ -294,7 +294,8 @@ export const getMethodInformation = (data, endpoint, method, info) => {
 export const jsGetDeleteTemplate = (data, endpoint, method, allRelevantHeaders, response, responseStructure, responseHeaders) => {
   let [tags, summary, description, operationId, requestBody, responses, callbacks, deprecated, thiSecurity, responseStatusDescription] = handleOtherInfoGivenBySpec(data, endpoint, method, response);
 
-  let url = yamlInteract.getServerInfo(data)[0].url || "no url";
+  let url = yamlInteract.getServerInfo(data)[0].url;
+  //console.log(url);
   //console.log(allRelevantHeaders);
   //console.log(responseHeaders);
   let requestHeadersInsertedIntoTest = "";
