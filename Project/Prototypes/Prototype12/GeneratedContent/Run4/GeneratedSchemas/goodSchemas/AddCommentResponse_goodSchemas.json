@@ -1,9 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "comment_id": {
-      "type": "integer",
-      "example": 14
-    }
-  }
-}

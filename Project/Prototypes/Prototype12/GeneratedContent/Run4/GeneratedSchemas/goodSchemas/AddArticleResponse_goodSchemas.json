@@ -1,9 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "article_id": {
-      "type": "integer",
-      "example": 14
-    }
-  }
-}
