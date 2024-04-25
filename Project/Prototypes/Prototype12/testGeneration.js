@@ -205,7 +205,7 @@ export const testgenerationEntryPoint = (data) => {
             newTestFileContent += singleTest;
           }
         } else {
-          //console.log(sendString);
+          console.log(externalFilesUsedInThisFilesTests.length);
           externalFilesUsedInThisFilesTests.forEach((filePathBeingInteractedWithForThisTest) => {
             //console.log(filePathBeingInteractedWithForThisTest);
             let test = jsPostPutPatchTemplate(
@@ -356,7 +356,7 @@ export const jsPostPutPatchTemplate = (data, endpoint, method, allRelevantHeader
   let javascriptTest = "";
   javascriptTest += `\ndescribe('${description}', () => {\n`;
   javascriptTest += `  before(() => {\n`;
-  javascriptTest += `    console.log("[Script: " + filename + "]");\n`;
+  javascriptTest += `    console.log("[Script: " + ${mockDataFilePath} + "]");\n`;
   javascriptTest += `  });\n`;
   javascriptTest += `  ${mockDataFilePath}.forEach((item) => {\n`; // Added opening bracket
   javascriptTest += `    it('Should return status ${response}: ', () => {\n`;
