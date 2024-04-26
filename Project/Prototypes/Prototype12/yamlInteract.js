@@ -626,7 +626,6 @@ export const getServerInfo = (data) => {
   return serverInfo;
 };
 
-
 export const getStatusDescription = (statusCode) => {
   return statushttp.statusDesc[statusCode];
 };
@@ -655,6 +654,7 @@ export const printUniqueSecurityMap = () => {
 };
 
 export const GenerateBadSchema = (schema, schemaName, info) => {
+  //This will need completely changing in the future to allow for users to generate their own bad schemas
   let returnedModififiedSchemas = [];
   let modificationTypes = [];
 

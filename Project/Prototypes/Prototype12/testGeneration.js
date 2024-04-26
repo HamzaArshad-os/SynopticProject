@@ -61,15 +61,19 @@ export const testgenerationEntryPoint = (data) => {
         let names = parametersData.map((parameterData) => extractInfo(parameterData, "name"));
         // First loop to generate all variables
         for (let parameterData of parametersData) {
+          //console.log("-------------------");
+          //console.log(parameterData);
           let name = extractInfo(parameterData, "name");
+          
           let goodMockData = extractInfo(parameterData, "goodMockData");
-
+         // console.log(goodMockData);
+          //console.log(goodMockData[0])
           let generatedVariable = jsGenerateParamterVariable(name, goodMockData[0]);
           if (generatedVariable) {
             if (generatedVariable) {
               topOfTestFile += generatedVariable;
             }
-            // console.log(generatedVariable);
+             //console.log(generatedVariable);
           }
         }
         // handle the endpoint path
@@ -87,7 +91,7 @@ export const testgenerationEntryPoint = (data) => {
             if (path === endpoint) {
               if (pathOrQuery === "path") {
                 let modifiedPath = replacePathParametersWithVariables(path, names);
-                //console.log(modifiedPath);
+                //console.log(path, modifiedPath);
                 modifiedEndpoint = modifiedPath;
                 // Assign modifiedEndpoint to endpointForThisTestInsertedIntoTest
                 endpointForThisTestInsertedIntoTest = modifiedEndpoint;
@@ -144,27 +148,32 @@ export const testgenerationEntryPoint = (data) => {
         // console.log(JSON.stringify(requestBodyData, null, 2));
         //If the method is Patch, Post or Put then we need to generate variables that define the filepaths for the good and bad mockData
         if ((method === "post" || method === "put" || method === "patch") && requestBodyData.length > 0) {
-          let goodSchemaFilePath = extractInfo(requestBodyData[0], "goodMockDataFilePath");
-          let badFilePaths = extractFilePaths(requestBodyData[0], "badMockDataFilePath_");
+          let goodMockDataFilePath = extractInfo(requestBodyData[0], "goodMockDataFilePath");
+          let badMockDataFilePaths = extractFilePaths(requestBodyData[0], "badMockDataFilePath_");
           //console.log(badFilePaths);
 
-          let generatedGoodFilePathVariables = jsGenerateMockDataPathVariable("goodMockData", goodSchemaFilePath);
+          let [goodMockDataVariableName, generatedGoodFilePathVariables] = jsGenerateMockDataPathVariable("goodMockData", goodMockDataFilePath);
+
+          // console.log(generatedGoodFilePathVariables);
           if (generatedGoodFilePathVariables) {
             topOfTestFile += generatedGoodFilePathVariables;
+            externalFilesUsedInThisFilesTests.push(goodMockDataVariableName);
           }
-          externalFilesUsedInThisFilesTests.push("GOODMOCKDATA");
-          for (let badFilePath of badFilePaths) {
+
+          for (let badFilePath of badMockDataFilePaths) {
             // Get the filename from the path
             let fileName = getFileNameFromPath(badFilePath);
             // Use the filename as the variable name
-            let generatedBadFilePathVariables = jsGenerateMockDataPathVariable(fileName, badFilePath);
+            //let generatedBadFilePathVariables = jsGenerateMockDataPathVariable(fileName, badMockDataFilePaths); old
+            let [badMockDataVariableName, generatedBadFilePathVariables] = jsGenerateMockDataPathVariable(fileName, badFilePath); //new
+            //console.log(generatedBadFilePathVariables);
             if (generatedBadFilePathVariables) {
               //console.log(generatedBadFilePathVariables);
 
               if (generatedBadFilePathVariables) {
-                topOfTestFile += generatedBadFilePathVariables;
+                topOfTestFile += generatedBadFilePathVariables; //ssss
+                externalFilesUsedInThisFilesTests.push(badMockDataVariableName.toUpperCase());
               }
-              externalFilesUsedInThisFilesTests.push(fileName.toUpperCase());
             }
           }
           //retriving the mockData structure for .send fucntioanlity
@@ -187,7 +196,7 @@ export const testgenerationEntryPoint = (data) => {
           responseStructure += expectStatements;
         }
 
-        //console.log(requestHeaderCodeInsertIntoTest);
+        // console.log(endpointForThisTestInsertedIntoTest);
         //console.log(responseHeaderCodeInsertIntoTest)
 
         if (method === "get" || method === "delete") {
@@ -205,7 +214,7 @@ export const testgenerationEntryPoint = (data) => {
             newTestFileContent += singleTest;
           }
         } else {
-          console.log(externalFilesUsedInThisFilesTests.length);
+          //console.log(externalFilesUsedInThisFilesTests.length);
           externalFilesUsedInThisFilesTests.forEach((filePathBeingInteractedWithForThisTest) => {
             //console.log(filePathBeingInteractedWithForThisTest);
             let test = jsPostPutPatchTemplate(
@@ -317,7 +326,7 @@ export const jsGetDeleteTemplate = (data, endpoint, method, allRelevantHeaders, 
   javascriptTest += `  it('should return status ${response}', () => {\n`;
   javascriptTest += `    return chai\n`;
   javascriptTest += `      .request('${url}')\n`;
-  javascriptTest += `      .${method}("${endpoint}")\n`;
+  javascriptTest += `      .${method}(${endpoint})\n`;
   javascriptTest += `      ${requestHeadersInsertedIntoTest}\n`;
   javascriptTest += `      .then((res) => {\n`;
   javascriptTest += `        expect(res).to.have.status(${response});\n`;
@@ -362,7 +371,7 @@ export const jsPostPutPatchTemplate = (data, endpoint, method, allRelevantHeader
   javascriptTest += `    it('Should return status ${response}: ', () => {\n`;
   javascriptTest += `      return chai\n`;
   javascriptTest += `        .request('${url}')\n`;
-  javascriptTest += `        .${method}("${endpoint}")\n`;
+  javascriptTest += `        .${method}(${endpoint})\n`;
   javascriptTest += `        ${requestHeadersInsertedIntoTest}\n`;
   javascriptTest += `        .send(item)\n`;
   javascriptTest += `        ${setTestCode}\n`;
@@ -444,7 +453,8 @@ function extractInfo(obj, keyPath) {
 export const jsGenerateParamterVariable = (name, mockData) => {
   let finishedVariable = "";
   let variableName = name.toUpperCase();
-  let variableValue = mockData;
+  // Check if mockData is a string and add quotation marks around it if it is
+  let variableValue = typeof mockData === "string" ? `"${mockData}"` : mockData;
 
   finishedVariable += `let ${variableName} = ${variableValue};\n`;
 
@@ -459,23 +469,30 @@ export const jsGenerateParamterVariable = (name, mockData) => {
   }
 };
 
+
 export const jsGenerateMockDataPathVariable = (name, mockDatapath) => {
-  let finishedVariable = "";
-  let mockDataVariableName = name.toUpperCase();
-  //let mockDataPath = mockDatapath;
+  // Ensure mockDatapath is a string
+  if (typeof mockDatapath !== "string") {
+    console.error("mockDatapath is not a string:", mockDatapath);
+    return [null, null];
+  }
+
+  // Remove any special characters and convert spaces to underscores
+  let safeName = name.replace(/[^a-zA-Z0-9_$]/g, "_");
+  let mockDataVariableName = safeName.toUpperCase();
   let mockDataPath = mockDatapath.replace(/\\/g, "/");
 
-  finishedVariable += `const ${mockDataVariableName} = require("${mockDataPath}");\n`;
+  let finishedVariable = `const ${mockDataVariableName} = require("${mockDataPath}");\n`;
 
   // Check if the finishedVariable already exists in the array
   if (!definedVariablesAtTopOfFile.includes(finishedVariable)) {
     // If it doesn't exist, add it to the array
     definedVariablesAtTopOfFile.push(finishedVariable);
-    //console.log(finishedVariable);
-    return finishedVariable;
+    // Return both the variable name and the finished variable
+    return [mockDataVariableName, finishedVariable];
   } else {
-    // If it does exist, return null
-    return null;
+    // If it does exist, return null for both
+    return [null, null];
   }
 };
 
@@ -537,18 +554,14 @@ function replacePathParametersWithVariables(path, names) {
       if (names.includes(paramName)) {
         paramName = paramName.toUpperCase();
         // Replace the segment with the variable representation
-        segments[i] = `+${paramName}+`;
+        segments[i] = `" + ${paramName} + "`;
       }
     }
   }
   // Join the segments back into a path
   path = segments.join("/");
-  // Remove trailing "+"
-  if (path.endsWith("+")) {
-    path = path.slice(0, -1);
-  }
   // Return the modified path
-  return path;
+  return `"${path}"`;
 }
 
 function generateQueryString(name) {
